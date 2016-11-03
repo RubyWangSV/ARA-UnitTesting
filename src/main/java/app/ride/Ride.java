@@ -1,30 +1,38 @@
-package app.car;
+package app.ride;
 
 import java.util.UUID;
 
-public class Car {
+public class Ride {
 	UUID id;
-	private String make;
-	private String model;
-	private String license;
-	private String carType;
-	private int maxPassengers;
-	private String color;
-	private String validRideTypes; // Values are ECONOMY, PREMIUM, EXECUTIVE
-	private Driver driver;
+	private String passenger;
+	private String driver;
+	private String car;
+	private String rideType;
+	private String startPoint;
+	private String endPoint;
+	private String requestTime;
+	private String pickupTime;
+	private String dropOffTime;
+	private String status;
+	private int fare;
+	private String route;
 
-	protected Car() {};
+	protected Ride() {};
 
-	public Car(String make, String model, String license, String carType, int maxPassengers, String color, String validRideTypes, Driver driver) {
+	public Ride(String passenger, String driver, String car, String rideType, String startPoint, String endPoint, String requestTime, String pickupTime, String dropOffTime, String status, int fare, String route,) {
 		////////////
 		this.id = UUID.randomUUID();
-		this.make = make;
-		this.model = model;
-		this.license = license;
-		this carType = carType;
-		this.maxPassengers = maxPassengers;
-		this.color = color;
-		this.validRideTypes = validRideTypes;
+		this.passenger = passenger;
 		this.driver = driver;
+		this.car = car;
+		this rideType = rideType;
+		this.startPoint = startPoint;
+		this.endPoint = endPoint;
+		this.requestTime = requestTime;
+		this.pickupTime = pickupTime;
+		this.dropOffTime = dropOffTime;
+		this.status = status;
+		this.fare = fare;
+		this.route = route;
 	}
 }

@@ -1,19 +1,19 @@
-package app.car;
+package app.ride;
 
 import spark.*;
 
-public CarController (final CarService carService) {
+public RideController (final RideService rideService) {
 
-	get("/api/v1/cars", (req, res) -> carService.getAllCars(), json());
+	get("/api/v1/rides", (req, res) -> rideService.getAllrides(), json());
 
-	get("/api/v1/cars/:id", (req, res) -> {
+	get("/api/v1/rides/:id", (req, res) -> {
 			String id = req.params(":id");
-			Car car = carService.getOneCar(id);
-			if (car != null) {
-				// car.save();
-				return car;
+			Ride ride = rideService.getOneride(id);
+			if (ride != null) {
+				// ride.save();
+				return ride;
 			}
 			res.status(400);
-			return new ResponseError("No car with id '%s' found", id);
+			return new ResponseError("No ride with id '%s' found", id);
 		}, json());
 }
