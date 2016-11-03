@@ -20,8 +20,9 @@ public class Application {
 
         port(8080); // use port 8080
 
-        get(versionURI +"/", (req, res) -> "Hello!");
+        get(versionURI +"/", (req, res) -> "It worked!"); // test server
 
+        /* return all cars */
         get(versionURI +"/cars", (req, res) -> {
             MongoSession session = MongoConfiguration.createSession();
             session.start();
@@ -43,9 +44,9 @@ public class Application {
                 res.type("application/json");
                 return responsepage.toString();
             }
-
         });
 
+        /* return car with :id */
         get(versionURI +"/cars/:id", (req, res) -> {
             MongoSession session = MongoConfiguration.createSession();
             session.start();
@@ -66,6 +67,7 @@ public class Application {
             }
         });
 
+        /* create new car */
         post(versionURI + "/cars", (req, res) -> {
             MongoSession session = MongoConfiguration.createSession();
             session.start();
@@ -99,7 +101,7 @@ public class Application {
             }
          });
 
-
+        /* delete car with :id */
         delete(versionURI +"/cars/:id", (req, res) -> {
             MongoSession session = MongoConfiguration.createSession();
             session.start();
@@ -120,7 +122,7 @@ public class Application {
             }
         });
 
-
+        /* initialize db */ 
         get(versionURI + "/cars/setup", (req, res) -> {
             MongoSession session = MongoConfiguration.createSession();
             session.start();
@@ -128,23 +130,15 @@ public class Application {
 
             try {
 
-                Car car = new Car("vw", "golf", "6PV11", "sedan", 5, "ECONOMY");
-
-                if (!car.isValid()) {
-                    res.status(400);
-                    return "";
-                }
+                Car car = new Car("Tesla", "S", "1234567", "sedan", 4, "LUXURY");
 
                 Repositories.cars().add(car);
-
-                Car car1 = new Car("lexus", "GX460", "7PWYY2", "suv", 5, "LUXURY");
-                Repositories.cars().add(car1);
 
                 session.stop();
 
                 res.status(200);
                 res.type("application/json");
-                return "setup sucess";
+                return "Added sample cars";
             }  catch (Exception e){
                 session.stop();
                 res.status(400);
