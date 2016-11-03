@@ -1,12 +1,12 @@
-package app.car;
+package app.passenger;
 
 import org.mongolink.domain.mapper.ContextBuilder;
 import org.mongolink.*;
 
-public class CarService {
+public class PassengerService {
 
-    public CarService () {
-        ContextBuilder builder = new ContextBuilder("app.car.mapping");
+    public PassengerService () {
+        ContextBuilder builder = new ContextBuilder("app.passenger.mapping");
         Settings settings = Settings.defaultInstance()
                     .withDefaultUpdateStrategy(UpdateStrategies.DIFF)
                     .withDbName("cmu_appdb")
@@ -15,25 +15,25 @@ public class CarService {
         MongoSessionManager mongoSessionManager = MongoSessionManager.create(builder, settings);
     }
 
-	public static List<Car> getAllCars = (Request request, Response response) -> {
+	public static List<Passenger> getAllPassengers = (Request request, Response response) -> {
         MongoSession session = mongoSessionManager.createSession();
         session.start();
         return session.get(persistentType());
         session.stop();
     };
 
-    public static Car getCar = (Request request, Response response) -> {
+    public static Passenger getPassenger = (Request request, Response response) -> {
         MongoSession session = mongoSessionManager.createSession();
         session.start();
         return session.get(request.id, persistentType());
         session.stop();
     };
 
-    public static Car createCar = (Request request, Response response) -> {
-    	Car car = new Car(request); // loop over request.body for parameters
-    	return car;
+    public static Passenger createPassenger = (Request request, Response response) -> {
+    	Passenger passenger = new Passenger(request); // loop over request.body for parameters
+    	return passenger;
     };
 
-    public static Car updateCar = (Request request, Response response) -> {
+    public static Passenger updatePassenger = (Request request, Response response) -> {
     };
 }

@@ -3,28 +3,36 @@ import java.util.UUID;
 
 public class Driver {
 	UUID id;
-	private String make;
-	private String model;
-	private String license;
-	private String carType;
-	private int maxPassengers;
-	private String color;
-	private String validRideTypes; // Values are ECONOMY, PREMIUM, EXECUTIVE
-	private Driver driver;
+	private String firstName;
+	private String lastName;
+	private String emailAddress;
+	private String password;
+	private String addressLine1;
+	private String addressLine2;
+	private String city;
+	private String state;
+	private String zip;
+	private String phoneNumber;
+	private String drivingLicense;
+	private String licensedState;
 
 	protected Driver() {};
 
-	public Driver(String make, String model, String license, String carType, int maxPassengers, String color, String validRideTypes, Driver driver) {
+	public Driver(String firstName, String lastName, String emailAddress, String password, String addressLine1, String addressLine2, String city, String state, String zip, String phoneNumber, String drivingLicense, String licensedState) {
 		////////////
 		this.id = UUID.randomUUID();
-		this.make = make;
-		this.model = model;
-		this.license = license;
-		this carType = carType;
-		this.maxPassengers = maxPassengers;
-		this.color = color;
-		this.validRideTypes = validRideTypes;
-		this.driver = driver;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.emailAddress = emailAddress;
+		this.password = password;		
+		this.addressLine1 = addressLine1;
+		this.addressLine2 = addressLine2;
+		this.city = city;	
+		this.state = state;
+		this.zip = zip;
+		this.phoneNumber = phoneNumber;
+		this.drivingLicense = drivingLicense;
+		this.licensedState = licensedState;				
 	}
 	
 }

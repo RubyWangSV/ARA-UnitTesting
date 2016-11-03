@@ -1,8 +1,8 @@
-package app.passenger.mapping;
+package app.driver.mapping;
 
 import org.mongolink.domain.mapper.AggregateMap
 
-public class PassengerService extends AggregateMap<Passenger> {
+public class DriverService extends AggregateMap<Driver> {
 	@Override
     public void map() {
         id().onProperty(element().getId()).natural();
@@ -15,6 +15,8 @@ public class PassengerService extends AggregateMap<Passenger> {
         property().onField("city");
         property().onField("state");        
         property().onField("zip");
-        property().onField("phoneNumber");                                    
+        property().onField("phoneNumber");                                
+        property().onField("drivingLicense");
+        property().onField("licensedState");        
     }
 }

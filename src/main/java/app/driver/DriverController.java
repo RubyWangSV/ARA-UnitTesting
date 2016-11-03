@@ -1,19 +1,19 @@
-package app.car;
+package app.driver;
 
 import spark.*;
 
-public CarController (final CarService carService) {
+public DriverController (final DriverService driverService) {
 
-	get("/api/v1/cars", (req, res) -> carService.getAllCars(), json());
+	get("/api/v1/drivers", (req, res) -> driverService.getAllDrivers(), json());
 
-	get("/api/v1/cars/:id", (req, res) -> {
+	get("/api/v1/drivers/:id", (req, res) -> {
 			String id = req.params(":id");
-			Car car = carService.getOneCar(id);
-			if (car != null) {
-				// car.save();
-				return car;
+			Driver driver = driverService.getOnedriver(id);
+			if (driver != null) {
+				// driver.save();
+				return driver;
 			}
 			res.status(400);
-			return new ResponseError("No car with id '%s' found", id);
+			return new ResponseError("No driver with id '%s' found", id);
 		}, json());
 }
