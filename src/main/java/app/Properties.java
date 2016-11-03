@@ -1,36 +1,14 @@
 package app;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import org.mongolink.Settings;
-
-
+import org.mongolink.*;
 import java.io.InputStream;
 
 public class Properties {
 
     public Settings addSettings(Settings settings) {
-        MongoClient mongoClient;
-        StringBuilder mongoClientURIBuilder = new StringBuilder();
-        mongoClientURIBuilder.append("mongodb://");
-        if (!getDBUser().isEmpty() && !getDBPassword().isEmpty()) {
-            mongoClientURIBuilder.append(getDBUser() +":" +getDBPassword() + "@");
-        }
-        if (!getDBHost().isEmpty()) {
-            mongoClientURIBuilder.append(getDBHost());
-            if (getDBPort() != 0) {
-                mongoClientURIBuilder.append(":"+getDBPort());
-            }
-        } else {
-            mongoClientURIBuilder.append("ds019886.mlab.com:19886");
-        }
-        System.out.println(mongoClientURIBuilder.toString());
-        mongoClient = new MongoClient(new MongoClientURI((mongoClientURIBuilder.toString())));
-        if (!getDBName().isEmpty()) {
-            return settings.withDatabase(mongoClient.getDatabase(getDBName()));
-        } else {
-            return settings.withDatabase(mongoClient.getDatabase("cmu_appdb"));
-        }
+        return settings.withHost(getDBHost()).withPort(getDBPort()).
+                withDbName(getDBName()).
+                withAuthentication(getDBUser(), getDBPassword());
     }
 
     public String getDBHost() {
@@ -67,6 +45,7 @@ public class Properties {
                 properties.load(stream);
                 stream.close();
             } catch (Exception e) {
+                //
             }
         }
 
