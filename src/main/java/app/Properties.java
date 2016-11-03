@@ -13,7 +13,6 @@ public class Properties {
         MongoClient mongoClient;
         StringBuilder mongoClientURIBuilder = new StringBuilder();
         mongoClientURIBuilder.append("mongodb://");
-        //MongoClientURI mongoClientURI;
         if (!getDBUser().isEmpty() && !getDBPassword().isEmpty()) {
             mongoClientURIBuilder.append(getDBUser() +":" +getDBPassword() + "@");
         }
@@ -27,18 +26,11 @@ public class Properties {
         }
         System.out.println(mongoClientURIBuilder.toString());
         mongoClient = new MongoClient(new MongoClientURI((mongoClientURIBuilder.toString())));
-        //settings.wi
         if (!getDBName().isEmpty()) {
             return settings.withDatabase(mongoClient.getDatabase(getDBName()));
         } else {
             return settings.withDatabase(mongoClient.getDatabase("cmu_appdb"));
         }
-
-        /*
-        return settings.withHost(getDBHost()).withPort(getDBPort()).
-                withDbName(getDBName()).
-                withAuthentication(getDBUser(), getDBPassword());
-        */
     }
 
     public String getDBHost() {
@@ -75,7 +67,6 @@ public class Properties {
                 properties.load(stream);
                 stream.close();
             } catch (Exception e) {
-                //
             }
         }
 

@@ -18,21 +18,17 @@ public class Application {
     public static void main(String[] args)  {
         String versionURI = "/v1";
 
-        port(8080); /* service listening on port 8080 */
+        port(8080); // use port 8080
 
-        /* http:a.b.c.d:8080/v1/ */
         get(versionURI +"/", (req, res) -> "Hello!");
 
-        // list all cars
         get(versionURI +"/cars", (req, res) -> {
-            //initialize db connection
             MongoSession session = MongoConfiguration.createSession();
             session.start();
             Repositories.initialise(new MongoRepositories(session));
 
             List<Car> cars = Repositories.cars().all();
 
-            /* close database connection */
             session.stop();
 
             res.status(200);
@@ -50,22 +46,18 @@ public class Application {
 
         });
 
-        // get car by id : v1/cars/:ID
         get(versionURI +"/cars/:id", (req, res) -> {
-            //initialize db connection
             MongoSession session = MongoConfiguration.createSession();
             session.start();
             Repositories.initialise(new MongoRepositories(session));
 
-            // get car by id, generate UUID from string id first
             UUID uid = UUID.fromString(req.params(":id"));
             Car car = Repositories.cars().get(uid);
 
-            // close database connection
             session.stop();
 
             if (car == null) {
-                res.status(404); // 404 Not found
+                res.status(404);
                 return "Car: " + req.params(":id") +" not found";
             } else {
                 res.status(200);
@@ -74,10 +66,7 @@ public class Application {
             }
         });
 
-
-        /* post: /cars */
         post(versionURI + "/cars", (req, res) -> {
-            /* initialize db connection */
             MongoSession session = MongoConfiguration.createSession();
             session.start();
             Repositories.initialise(new MongoRepositories(session));
@@ -98,10 +87,8 @@ public class Application {
 
                 Repositories.cars().add(car);
 
-                // close database connection
                 session.stop();
 
-                //prepare return result
                 res.status(200);
                 res.type("application/json");
                 return dataToJson(car);
@@ -113,25 +100,20 @@ public class Application {
          });
 
 
-        // delete car by id : v1/cars/:ID
         delete(versionURI +"/cars/:id", (req, res) -> {
-            //initialize db connection
             MongoSession session = MongoConfiguration.createSession();
             session.start();
             Repositories.initialise(new MongoRepositories(session));
 
-            // get car by id, generate UUID from string id first
             UUID uid = UUID.fromString(req.params(":id"));
             Car car = Repositories.cars().get(uid);
 
             if (car == null) {
-                res.status(404); // 404 Not found
-                // close database connection
+                res.status(404); 
                 session.stop();
                 return "Car: " + req.params(":id") +" not found";
             } else {
                 Repositories.cars().delete(car);
-                // close database connection
                 session.stop();
                 res.status(200);
                 return "Car: " + req.params(":id") +" deleted";
@@ -139,9 +121,7 @@ public class Application {
         });
 
 
-        /* secret setup */
         get(versionURI + "/cars/setup", (req, res) -> {
-            /* initialize db connection */
             MongoSession session = MongoConfiguration.createSession();
             session.start();
             Repositories.initialise(new MongoRepositories(session));
@@ -160,13 +140,10 @@ public class Application {
                 Car car1 = new Car("lexus", "GX460", "7PWYY2", "suv", 5, "LUXURY");
                 Repositories.cars().add(car1);
 
-                /* close database connection */
                 session.stop();
 
-                /* prepare return result */
                 res.status(200);
                 res.type("application/json");
-                //return dataToJson(car) + dataToJason(car1);
                 return "setup sucess";
             }  catch (Exception e){
                 session.stop();
