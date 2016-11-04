@@ -18,7 +18,7 @@ public class MongoConfiguration {
         INSTANCE;
 
         private Singleton() {
-            ContextBuilder builder = new ContextBuilder("app.persistence.mapping");
+            ContextBuilder builder = new ContextBuilder("persistance.mapping");
             mongoSessionManager = MongoSessionManager.create(builder, new Properties().addSettings(Settings.defaultInstance()));
         }
 
