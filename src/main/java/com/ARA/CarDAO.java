@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import spark.Request;
 
-
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import org.mongodb.morphia.dao.BasicDAO;
 
 
 /**
- * implementation of CarDAO
+ * implementation of Car's Data Access Object
  * @author Edam
  *
  */
