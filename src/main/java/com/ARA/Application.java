@@ -14,6 +14,7 @@ public class Application {
 
     private static MorphiaService morphiaService;
     private static CarDAO carDAO;
+    private static DriverDAO driverDAO;
     private static RideDAO rideDAO;
 
     public Application() {
@@ -21,6 +22,7 @@ public class Application {
         this.morphiaService = new MorphiaService();
         this.carDAO = new CarDAO(Car.class, morphiaService.getDatastore());
         this.rideDAO = new RideDAO(Ride.class, morphiaService.getDatastore());
+        this.driverDAO = new DriverDAO(Driver.class, morphiaService.getDatastore());
     }
 
     public static void main(String[] args) {
@@ -50,6 +52,14 @@ public class Application {
         // DELETE
         // delete car with given id
         delete(versionURI + "/car/:id", (req, res) -> dataToJson(carDAO.deleteCar(req)));
+
+        // CRUD for Drivers
+        get(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.getAllDrivers()));
+        get(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.getDriver(req)));
+        post(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.createDriver(req)));
+        patch(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.updateDriver(req)));
+        delete(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.deleteDriver(req)));
+
 
         // CRUD for Rides
         // GET
