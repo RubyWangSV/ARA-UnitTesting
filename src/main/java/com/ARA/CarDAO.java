@@ -35,12 +35,19 @@ public class CarDAO extends BasicDAO<Car, String> {
     }
 
     public Car createCar(Request req) {
+
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+
         String make = jsonObject.get("make").toString().replaceAll("\"", "");
+
         String model = jsonObject.get("model").toString().replaceAll("\"", "");
+
         String license = jsonObject.get("license").toString().replaceAll("\"", "");
+
         String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
+
         int maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
+
         String color = jsonObject.get("color").toString().replaceAll("\"", "");
 
         Type listType = new TypeToken<ArrayList<String>>(){}.getType();
@@ -60,37 +67,44 @@ public class CarDAO extends BasicDAO<Car, String> {
 
         if (jsonObject.has("make")) {
             String make = jsonObject.get("make").toString().replaceAll("\"", "");
+
             car.setMake(make);
         }
 
         if (jsonObject.has("model")) {
             String model = jsonObject.get("model").toString().replaceAll("\"", "");
+
             car.setModel(model);
         }
 
         if (jsonObject.has("license")) {
             String license = jsonObject.get("license").toString().replaceAll("\"", "");
+
             car.setLicense(license);
         }
 
         if (jsonObject.has("carType")) {
             String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
+
             car.setCarType(carType);
         }
 
         if (jsonObject.has("maxPassengers")) {
             int maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
+
             car.setMaxPassengers(maxPassengers);
         }
 
         if (jsonObject.has("color")) {
             String color = jsonObject.get("color").toString().replaceAll("\"", "");
+
             car.setColor(color);
         }
 
         if (jsonObject.has("validRideTypes")) {
             Type listType = new TypeToken<ArrayList<String>>(){}.getType();
             List<String> validRideTypes = new Gson().fromJson(jsonObject.get("validRideTypes").getAsJsonArray(), listType);
+
             car.setValidRideTypes(validRideTypes);
         }
 

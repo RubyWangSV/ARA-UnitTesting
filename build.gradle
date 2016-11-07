@@ -13,12 +13,15 @@ dependencies {
     compile 'com.sparkjava:spark-core:2.5'
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.5.0'
+
     compile 'org.mongodb.morphia:morphia:1.2.1'
     compile "com.google.guava:guava:16+"
     compile 'log4j:log4j:1.2.17'
     compile 'org.slf4j:slf4j-api:1.7.5'
     compile 'org.slf4j:slf4j-log4j12:1.7.5'
     compile 'com.google.code.gson:gson:2.5'
+    compile 'joda-time:joda-time:2.3'
 
     testCompile 'junit:junit:4.12'
 }
