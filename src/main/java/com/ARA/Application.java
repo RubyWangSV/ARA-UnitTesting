@@ -15,14 +15,17 @@ public class Application {
     private static MorphiaService morphiaService;
     private static CarDAO carDAO;
     private static DriverDAO driverDAO;
+    private static PassengerDAO passengerDAO;
     private static RideDAO rideDAO;
 
     public Application() {
         // set up Morphia service
         this.morphiaService = new MorphiaService();
         this.carDAO = new CarDAO(Car.class, morphiaService.getDatastore());
-        this.rideDAO = new RideDAO(Ride.class, morphiaService.getDatastore());
         this.driverDAO = new DriverDAO(Driver.class, morphiaService.getDatastore());
+        this.passengerDAO = new PassengerDAO(Passenger.class, morphiaService.getDatastore());
+        this.rideDAO = new RideDAO(Ride.class, morphiaService.getDatastore());
+
     }
 
     public static void main(String[] args) {
@@ -39,19 +42,19 @@ public class Application {
         // CRUD for Cars
         // GET
         // get all cars
-        get(versionURI + "/car", (req, res) -> dataToJson(carDAO.getAllCars()));
+        get(versionURI + "/cars", (req, res) -> dataToJson(carDAO.getAllCars()));
         // GET
         // get car with given id
-        get(versionURI + "/car/:id", (req, res) -> dataToJson(carDAO.getCar(req)));
+        get(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.getCar(req)));
         // POST
         // create a new car
-        post(versionURI + "/car", (req, res) -> dataToJson(carDAO.createCar(req)));
+        post(versionURI + "/cars", (req, res) -> dataToJson(carDAO.createCar(req)));
         // POST
         // update car with given id
-        post(versionURI + "/car/:id", (req, res) -> dataToJson(carDAO.updateCar(req)));
+        patch(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.updateCar(req)));
         // DELETE
         // delete car with given id
-        delete(versionURI + "/car/:id", (req, res) -> dataToJson(carDAO.deleteCar(req)));
+        delete(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.deleteCar(req)));
 
         // CRUD for Drivers
         get(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.getAllDrivers()));
@@ -60,23 +63,30 @@ public class Application {
         patch(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.updateDriver(req)));
         delete(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.deleteDriver(req)));
 
+        // CRUD for Passengers
+        get(versionURI + "/passengers", (req, res) -> dataToJson(passengerDAO.getAllPassengers()));
+        get(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.getPassenger(req)));
+        post(versionURI + "/passengers", (req, res) -> dataToJson(passengerDAO.createPassenger(req)));
+        patch(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.updatePassenger(req)));
+        delete(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.deletePassenger(req)));
+
 
         // CRUD for Rides
         // GET
         // get all rides
-        get(versionURI + "/ride", (req, res) -> dataToJson(rideDAO.getAllRides()));
+        get(versionURI + "/rides", (req, res) -> dataToJson(rideDAO.getAllRides()));
         // GET
         // get ride with given id
-        get(versionURI + "/ride/:id", (req, res) -> dataToJson(rideDAO.getRide(req)));
+        get(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.getRide(req)));
         // POST
         // create a new ride
-        post(versionURI + "/ride", (req, res) -> dataToJson(rideDAO.createRide(req)));
+        post(versionURI + "/rides", (req, res) -> dataToJson(rideDAO.createRide(req)));
         // POST
         // update ride with given id
-        post(versionURI + "/ride/:id", (req, res) -> dataToJson(rideDAO.updateRide(req)));
+        post(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.updateRide(req)));
         // DELETE
         // delete ride with given id
-        delete(versionURI + "/ride/:id", (req, res) -> dataToJson(rideDAO.deleteRide(req)));
+        delete(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.deleteRide(req)));
     }
 
     // convert Object data to Json format
