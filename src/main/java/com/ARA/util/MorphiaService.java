@@ -1,4 +1,4 @@
-package com.ARA;
+package com.ARA.util;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;

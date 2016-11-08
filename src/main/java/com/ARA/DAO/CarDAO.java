@@ -1,4 +1,6 @@
-package com.ARA;
+package com.ARA.DAO;
+
+import com.ARA.module.Car;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -12,6 +14,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
+import spark.Response;
 
 
 /**
@@ -25,16 +28,16 @@ public class CarDAO extends BasicDAO<Car, String> {
         super(entityClass, ds);
     }
 
-    public List<Car> getAllCars() {
+    public List<Car> getAllCars(Request req, Response res) {
         return getDs().find(Car.class).asList();
     }
 
-    public Car getCar(Request req) {
+    public Car getCar(Request req, Response res) {
         String id = req.params(":id");
         return getDs().find(Car.class).field("id").equal(id).get();
     }
 
-    public Car createCar(Request req) {
+    public Car createCar(Request req, Response res) {
 
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -46,7 +49,7 @@ public class CarDAO extends BasicDAO<Car, String> {
 
         String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
 
-        int maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
+        Integer maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
 
         String color = jsonObject.get("color").toString().replaceAll("\"", "");
 
@@ -59,7 +62,7 @@ public class CarDAO extends BasicDAO<Car, String> {
         return newCar;
     }
 
-    public Car updateCar(Request req) {
+    public Car updateCar(Request req, Response res) {
         String id = req.params(":id");
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -90,7 +93,7 @@ public class CarDAO extends BasicDAO<Car, String> {
         }
 
         if (jsonObject.has("maxPassengers")) {
-            int maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
+            Integer maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
 
             car.setMaxPassengers(maxPassengers);
         }
@@ -112,7 +115,7 @@ public class CarDAO extends BasicDAO<Car, String> {
         return car;
     }
 
-    public Car deleteCar(Request req) {
+    public Car deleteCar(Request req, Response res) {
         String id = req.params(":id");
         Car car =  getDs().find(Car.class).field("id").equal(id).get();
         getDs().delete(car);

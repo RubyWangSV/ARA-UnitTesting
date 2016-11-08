@@ -1,12 +1,11 @@
-package com.ARA;
+package com.ARA.DAO;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.ARA.module.Passenger;
+
 import spark.Request;
+import spark.Response;
 
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.ArrayList;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,18 +18,18 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         super(entityClass, ds);
     }
 
-    public List<Passenger> getAllPassengers() {
+    public List<Passenger> getAllPassengers(Request req, Response res) {
         return getDs().find(Passenger.class).asList();
     }
 
-    public Passenger getPassenger(Request req) {
+    public Passenger getPassenger(Request req, Response res) {
         String id = req.params(":id");
         return getDs().find(Passenger.class).field("id").equal(id).get();
     }
 
-    public Passenger createPassenger(Request req) {
+    public Passenger createPassenger(Request req, Response res) {
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-        System.out.println(jsonObject.get("firstName"));
+
         String firstName = jsonObject.get("firstName").toString().replaceAll("\"", "");
         String lastName = jsonObject.get("lastName").toString().replaceAll("\"", "");
         String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
@@ -48,7 +47,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         return newPassenger;
     }
 
-    public Passenger updatePassenger(Request req) {
+    public Passenger updatePassenger(Request req, Response res) {
         String id = req.params(":id");
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -108,7 +107,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         return passenger;
     }
 
-    public Passenger deletePassenger(Request req) {
+    public Passenger deletePassenger(Request req, Response res) {
         String id = req.params(":id");
         Passenger passenger =  getDs().find(Passenger.class).field("id").equal(id).get();
         getDs().delete(passenger);

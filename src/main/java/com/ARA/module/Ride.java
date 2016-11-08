@@ -1,4 +1,4 @@
-package com.ARA;
+package com.ARA.module;
 
 import java.util.List;
 import java.util.UUID;

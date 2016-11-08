@@ -1,5 +1,9 @@
 package com.ARA;
 
+import com.ARA.module.*;
+import com.ARA.DAO.*;
+import com.ARA.util.*;
+
 import static spark.Spark.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,51 +46,51 @@ public class Application {
         // CRUD for Cars
         // GET
         // get all cars
-        get(versionURI + "/cars", (req, res) -> dataToJson(carDAO.getAllCars()));
+        get(versionURI + "/cars", (req, res) -> dataToJson(carDAO.getAllCars(req, res)));
         // GET
         // get car with given id
-        get(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.getCar(req)));
+        get(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.getCar(req, res)));
         // POST
         // create a new car
-        post(versionURI + "/cars", (req, res) -> dataToJson(carDAO.createCar(req)));
+        post(versionURI + "/cars", (req, res) -> dataToJson(carDAO.createCar(req, res)));
         // POST
         // update car with given id
-        patch(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.updateCar(req)));
+        patch(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.updateCar(req, res)));
         // DELETE
         // delete car with given id
-        delete(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.deleteCar(req)));
+        delete(versionURI + "/cars/:id", (req, res) -> dataToJson(carDAO.deleteCar(req, res)));
 
         // CRUD for Drivers
-        get(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.getAllDrivers()));
-        get(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.getDriver(req)));
-        post(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.createDriver(req)));
-        patch(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.updateDriver(req)));
-        delete(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.deleteDriver(req)));
+        get(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.getAllDrivers(req, res)));
+        get(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.getDriver(req, res)));
+        post(versionURI + "/drivers", (req, res) -> dataToJson(driverDAO.createDriver(req, res)));
+        patch(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.updateDriver(req, res)));
+        delete(versionURI + "/drivers/:id", (req, res) -> dataToJson(driverDAO.deleteDriver(req, res)));
 
         // CRUD for Passengers
-        get(versionURI + "/passengers", (req, res) -> dataToJson(passengerDAO.getAllPassengers()));
-        get(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.getPassenger(req)));
-        post(versionURI + "/passengers", (req, res) -> dataToJson(passengerDAO.createPassenger(req)));
-        patch(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.updatePassenger(req)));
-        delete(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.deletePassenger(req)));
+        get(versionURI + "/passengers", (req, res) -> dataToJson(passengerDAO.getAllPassengers(req, res)));
+        get(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.getPassenger(req, res)));
+        post(versionURI + "/passengers", (req, res) -> dataToJson(passengerDAO.createPassenger(req, res)));
+        patch(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.updatePassenger(req, res)));
+        delete(versionURI + "/passengers/:id", (req, res) -> dataToJson(passengerDAO.deletePassenger(req, res)));
 
 
         // CRUD for Rides
         // GET
         // get all rides
-        get(versionURI + "/rides", (req, res) -> dataToJson(rideDAO.getAllRides()));
+        get(versionURI + "/rides", (req, res) -> dataToJson(rideDAO.getAllRides(req, res)));
         // GET
         // get ride with given id
-        get(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.getRide(req)));
+        get(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.getRide(req, res)));
         // POST
         // create a new ride
-        post(versionURI + "/rides", (req, res) -> dataToJson(rideDAO.createRide(req)));
+        post(versionURI + "/rides", (req, res) -> dataToJson(rideDAO.createRide(req, res)));
         // POST
         // update ride with given id
-        post(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.updateRide(req)));
+        post(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.updateRide(req, res)));
         // DELETE
         // delete ride with given id
-        delete(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.deleteRide(req)));
+        delete(versionURI + "/rides/:id", (req, res) -> dataToJson(rideDAO.deleteRide(req, res)));
     }
 
     // convert Object data to Json format

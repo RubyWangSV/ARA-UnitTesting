@@ -1,4 +1,6 @@
-package com.ARA;
+package com.ARA.DAO;
+
+import com.ARA.module.Ride;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -6,7 +8,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
+
 import spark.Request;
+import spark.Response;
 
 import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
@@ -28,16 +32,16 @@ public class RideDAO extends BasicDAO<Ride, String> {
         super(entityClass, ds);
     }
 
-    public List<Ride> getAllRides() {
+    public List<Ride> getAllRides(Request req, Response res) {
         return getDs().find(Ride.class).asList();
     }
 
-    public Ride getRide(Request req) {
+    public Ride getRide(Request req, Response res) {
         String id = req.params(":id");
         return getDs().find(Ride.class).field("id").equal(id).get();
     }
 
-    public Ride createRide(Request req) {
+    public Ride createRide(Request req, Response res) {
 
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -64,7 +68,7 @@ public class RideDAO extends BasicDAO<Ride, String> {
         return newRide;
     }
 
-    public Ride updateRide(Request req) {
+    public Ride updateRide(Request req, Response res) {
         String id = req.params(":id");
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -124,7 +128,7 @@ public class RideDAO extends BasicDAO<Ride, String> {
         return ride;
     }
 
-    public Ride deleteRide(Request req) {
+    public Ride deleteRide(Request req, Response res) {
         String id = req.params(":id");
         Ride ride =  getDs().find(Ride.class).field("id").equal(id).get();
         getDs().delete(ride);

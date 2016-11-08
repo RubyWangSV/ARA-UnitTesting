@@ -1,17 +1,17 @@
-package com.ARA;
+package com.ARA.DAO;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.ARA.module.Driver;
+
 import spark.Request;
+import spark.Response;
 
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.ArrayList;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
+
 
 public class DriverDAO extends BasicDAO<Driver, String> {
 
@@ -19,18 +19,18 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         super(entityClass, ds);
     }
 
-    public List<Driver> getAllDrivers() {
+    public List<Driver> getAllDrivers(Request req, Response res) {
         return getDs().find(Driver.class).asList();
     }
 
-    public Driver getDriver(Request req) {
+    public Driver getDriver(Request req, Response res) {
         String id = req.params(":id");
         return getDs().find(Driver.class).field("id").equal(id).get();
     }
 
-    public Driver createDriver(Request req) {
+    public Driver createDriver(Request req, Response res) {
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-        System.out.println(jsonObject.get("firstName"));
+
         String firstName = jsonObject.get("firstName").toString().replaceAll("\"", "");
         String lastName = jsonObject.get("lastName").toString().replaceAll("\"", "");
         String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
@@ -50,7 +50,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         return newDriver;
     }
 
-    public Driver updateDriver(Request req) {
+    public Driver updateDriver(Request req, Response res) {
         String id = req.params(":id");
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -120,7 +120,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         return driver;
     }
 
-    public Driver deleteDriver(Request req) {
+    public Driver deleteDriver(Request req, Response res) {
         String id = req.params(":id");
         Driver driver =  getDs().find(Driver.class).field("id").equal(id).get();
         getDs().delete(driver);

@@ -1,4 +1,4 @@
-package com.ARA;
+package com.ARA.module;
 
 import java.util.List;
 import java.util.UUID;
@@ -6,8 +6,8 @@ import java.util.UUID;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-@Entity("passenger")
-public class Passenger {
+@Entity("driver")
+public class Driver {
 
     @Id
     private String id;
@@ -21,13 +21,15 @@ public class Passenger {
     private String state;
     private String zip;           
     private String phoneNumber;
+    private String drivingLicense;
+    private String licensedState;
 
     /**
      * keep an empty constructor so that morphia
      * can recreate this entity fetch it from
      * the database
      */
-    public Passenger(){}
+    public Driver(){}
 
 
     /**
@@ -43,9 +45,11 @@ public class Passenger {
      * @param state
      * @param zip
      * @param phoneNumber
+     * @param drivingLicense
+     * @param licensedState
      */
 
-    public Passenger(String firstName, String lastName, String emailAddress, String password, String addressLine1, String addressLine2, String city, String state, String zip, String phoneNumber) {
+    public Driver(String firstName, String lastName, String emailAddress, String password, String addressLine1, String addressLine2, String city, String state, String zip, String phoneNumber, String drivingLicense, String licensedState) {
         super();
         this.id = UUID.randomUUID().toString();
         this.firstName = firstName;
@@ -57,7 +61,9 @@ public class Passenger {
         this.city = city;   
         this.state = state;
         this.zip = zip;
-        this.phoneNumber = phoneNumber;            
+        this.phoneNumber = phoneNumber;
+        this.drivingLicense = drivingLicense;
+        this.licensedState = licensedState;             
     }
 
     public String getId() {
@@ -146,5 +152,21 @@ public class Passenger {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }                 
+    }        
+
+    public String getDrivingLicense() {
+        return drivingLicense;
+    }
+
+    public void setDrivingLicense(String drivingLicense) {
+        this.drivingLicense = drivingLicense;
+    }      
+
+    public String getLicensedState() {
+        return licensedState;
+    }
+
+    public void setLicensedState(String licensedState) {
+        this.licensedState = licensedState;
+    }          
 }

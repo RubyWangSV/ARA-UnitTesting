@@ -1,4 +1,4 @@
-package com.ARA;
+package com.ARA.module;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class Car {
 
     private String carType;
 
-    private int maxPassengers;
+    private Integer maxPassengers;
 
     private String color;
 
@@ -46,7 +46,7 @@ public class Car {
      * @param validRideTypes
      */
     public Car(String make, String model, String license,
-                String carType, int maxPassengers, String color,
+                String carType, Integer maxPassengers, String color,
                 List<String> validRideTypes) {
         super();
         this.id = UUID.randomUUID().toString();
@@ -102,11 +102,11 @@ public class Car {
         this.carType = carType;
     }
 
-    public int getMaxPassengers() {
+    public Integer getMaxPassengers() {
         return maxPassengers;
     }
 
-    public void setMaxPassengers(int maxPassengers) {
+    public void setMaxPassengers(Integer maxPassengers) {
         this.maxPassengers = maxPassengers;
     }
 
