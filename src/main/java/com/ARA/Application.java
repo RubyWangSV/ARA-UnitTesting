@@ -60,12 +60,12 @@ public class Application {
         // delete car with given id
         delete(versionURI + "/cars/:id", (req, res) -> carDAO.deleteCar(req, res));
 
-//        // CRUD for Drivers
-//        get(versionURI + "/drivers", (req, res) -> driverDAO.getAllDrivers(req, res));
-//        get(versionURI + "/drivers/:id", (req, res) -> driverDAO.getDriver(req, res));
-//        post(versionURI + "/drivers", (req, res) -> driverDAO.createDriver(req, res));
-//        patch(versionURI + "/drivers/:id", (req, res) -> driverDAO.updateDriver(req, res));
-//        delete(versionURI + "/drivers/:id", (req, res) -> driverDAO.deleteDriver(req, res));
+        // CRUD for Drivers
+        get(versionURI + "/drivers", (req, res) -> driverDAO.getAllDrivers(req, res));
+        get(versionURI + "/drivers/:id", (req, res) -> driverDAO.getDriver(req, res));
+        post(versionURI + "/drivers", (req, res) -> driverDAO.createDriver(req, res));
+        patch(versionURI + "/drivers/:id", (req, res) -> driverDAO.updateDriver(req, res));
+        delete(versionURI + "/drivers/:id", (req, res) -> driverDAO.deleteDriver(req, res));
 //
 //        // CRUD for Passengers
 //        get(versionURI + "/passengers", (req, res) -> passengerDAO.getAllPassengers(req, res));
