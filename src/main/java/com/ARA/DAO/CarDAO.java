@@ -81,10 +81,13 @@ public class CarDAO extends BasicDAO<Car, String> {
 
             Car newCar = new Car(make, model, license, carType, maxPassengers, color, validRideTypes);
 
-            if (!Validate.validCar(newCar))
+            if (!Validate.validCar(newCar)) {
+                res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+            }
 
             getDs().save(newCar);
+            res.status(200);
             return dataToJson.d2j(newCar);
         } catch (Exception e) {
             res.status(500);
@@ -142,10 +145,13 @@ public class CarDAO extends BasicDAO<Car, String> {
 
                 car.setValidRideTypes(validRideTypes);
             }
-            if (!Validate.validCar(car))
+            if (!Validate.validCar(car)) {
+                res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+            }
 
             getDs().save(car);
+            res.status(200);
             return dataToJson.d2j(car);
         } catch (Exception e) {
             res.status(500);
@@ -162,6 +168,7 @@ public class CarDAO extends BasicDAO<Car, String> {
                 return dataToJson.d2j(new Error(400, 1000, "Car not found"));
             }
             getDs().delete(car);
+            res.status(200);
             return dataToJson.d2j(car);
         } catch (Exception e) {
             res.status(500);
