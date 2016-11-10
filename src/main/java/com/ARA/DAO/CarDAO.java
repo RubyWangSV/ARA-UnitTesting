@@ -2,10 +2,15 @@ package com.ARA.DAO;
 
 import com.ARA.module.Car;
 
+import com.ARA.util.Error;
+import com.ARA.util.Validate;
+import com.ARA.util.dataToJson;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import spark.Request;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.ArrayList;
@@ -28,97 +33,139 @@ public class CarDAO extends BasicDAO<Car, String> {
         super(entityClass, ds);
     }
 
-    public List<Car> getAllCars(Request req, Response res) {
-        return getDs().find(Car.class).asList();
+    public String getAllCars(Request req, Response res) throws IOException {
+        try {
+            List<Car> allCar = getDs().find(Car.class).asList();
+            res.status(200);
+            return dataToJson.d2j(allCar);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
     }
 
-    public Car getCar(Request req, Response res) {
-        String id = req.params(":id");
-        return getDs().find(Car.class).field("id").equal(id).get();
+    public String getCar(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            Car car = getDs().find(Car.class).field("id").equal(id).get();
+            if (car == null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 1000, "Car not found"));
+            }
+            res.status(200);
+            return dataToJson.d2j(car);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
     }
 
-    public Car createCar(Request req, Response res) {
-
-        JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-
-        String make = jsonObject.get("make").toString().replaceAll("\"", "");
-
-        String model = jsonObject.get("model").toString().replaceAll("\"", "");
-
-        String license = jsonObject.get("license").toString().replaceAll("\"", "");
-
-        String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
-
-        Integer maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
-
-        String color = jsonObject.get("color").toString().replaceAll("\"", "");
-
-        Type listType = new TypeToken<ArrayList<String>>(){}.getType();
-        List<String> validRideTypes = new Gson().fromJson(jsonObject.get("validRideTypes").getAsJsonArray(), listType);
-
-        Car newCar = new Car(make, model, license, carType, maxPassengers, color, validRideTypes);
-        getDs().save(newCar);
-
-        return newCar;
-    }
-
-    public Car updateCar(Request req, Response res) {
-        String id = req.params(":id");
-        JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-
-        Car car =  getDs().find(Car.class).field("id").equal(id).get();
-
-        if (jsonObject.has("make")) {
+    public String createCar(Request req, Response res) throws IOException {
+        try {
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            boolean valid = true;
             String make = jsonObject.get("make").toString().replaceAll("\"", "");
 
-            car.setMake(make);
-        }
-
-        if (jsonObject.has("model")) {
             String model = jsonObject.get("model").toString().replaceAll("\"", "");
 
-            car.setModel(model);
-        }
-
-        if (jsonObject.has("license")) {
             String license = jsonObject.get("license").toString().replaceAll("\"", "");
 
-            car.setLicense(license);
-        }
-
-        if (jsonObject.has("carType")) {
             String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
 
-            car.setCarType(carType);
-        }
-
-        if (jsonObject.has("maxPassengers")) {
             Integer maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
-
-            car.setMaxPassengers(maxPassengers);
-        }
-
-        if (jsonObject.has("color")) {
             String color = jsonObject.get("color").toString().replaceAll("\"", "");
 
-            car.setColor(color);
-        }
-
-        if (jsonObject.has("validRideTypes")) {
-            Type listType = new TypeToken<ArrayList<String>>(){}.getType();
+            Type listType = new TypeToken<ArrayList<String>>() {
+            }.getType();
             List<String> validRideTypes = new Gson().fromJson(jsonObject.get("validRideTypes").getAsJsonArray(), listType);
 
-            car.setValidRideTypes(validRideTypes);
-        }
+            Car newCar = new Car(make, model, license, carType, maxPassengers, color, validRideTypes);
 
-        getDs().save(car);
-        return car;
+            if (!Validate.validCar(newCar))
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+
+            getDs().save(newCar);
+            return dataToJson.d2j(newCar);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
     }
 
-    public Car deleteCar(Request req, Response res) {
-        String id = req.params(":id");
-        Car car =  getDs().find(Car.class).field("id").equal(id).get();
-        getDs().delete(car);
-        return car;
+    public String updateCar(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+
+            Car car = getDs().find(Car.class).field("id").equal(id).get();
+
+            if (jsonObject.has("make")) {
+                String make = jsonObject.get("make").toString().replaceAll("\"", "");
+
+                car.setMake(make);
+            }
+
+            if (jsonObject.has("model")) {
+                String model = jsonObject.get("model").toString().replaceAll("\"", "");
+
+                car.setModel(model);
+            }
+
+            if (jsonObject.has("license")) {
+                String license = jsonObject.get("license").toString().replaceAll("\"", "");
+
+                car.setLicense(license);
+            }
+
+            if (jsonObject.has("carType")) {
+                String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
+
+                car.setCarType(carType);
+            }
+
+            if (jsonObject.has("maxPassengers")) {
+                Integer maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
+
+                car.setMaxPassengers(maxPassengers);
+            }
+
+            if (jsonObject.has("color")) {
+                String color = jsonObject.get("color").toString().replaceAll("\"", "");
+
+                car.setColor(color);
+            }
+
+            if (jsonObject.has("validRideTypes")) {
+                Type listType = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                List<String> validRideTypes = new Gson().fromJson(jsonObject.get("validRideTypes").getAsJsonArray(), listType);
+
+                car.setValidRideTypes(validRideTypes);
+            }
+            if (!Validate.validCar(car))
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+
+            getDs().save(car);
+            return dataToJson.d2j(car);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
+    }
+
+    public String deleteCar(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            Car car = getDs().find(Car.class).field("id").equal(id).get();
+            if (car == null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 1000, "Car not found"));
+            }
+            getDs().delete(car);
+            return dataToJson.d2j(car);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
     }
 }

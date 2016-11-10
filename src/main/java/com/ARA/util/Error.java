@@ -7,6 +7,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.converters.IntegerConverter;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,19 +18,12 @@ import java.util.List;
  */
 public class Error {
 
-    private Integer statusCode;
-    private Integer errorCode;
-    private String errorMessage;
+    public Integer statusCode;
+    public Integer errorCode;
+    public String errorMessage;
 
     public Error() {}
 
-    /**
-     * full constructor
-     *
-     * @param statusCode
-     * @param errorCode
-     * @param errorMessage
-     */
     public Error(Integer statusCode, Integer errorCode, String errorMessage) {
         super();
         this.statusCode = statusCode;
