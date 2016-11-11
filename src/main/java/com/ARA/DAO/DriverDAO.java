@@ -35,7 +35,18 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
     public String getAllDrivers(Request req, Response res) throws IOException{
         try {
-            List<Driver> allDriver = getDs().find(Driver.class).asList();
+            // ArrayList<String> Params = new ArrayList<String>();
+
+            Integer count = Integer.valueOf(req.queryParams("count"));
+            Integer offset = Integer.valueOf(req.queryParams("offset"));
+            String sort = req.queryParams("sort");
+            String sortOrder = req.queryParams("sortOrder");
+
+            if( count == null)  count = 2147483647;
+            if( offset == null)  offset = 0;
+            if( sort == null)  sort = "_id";
+
+            List<Driver> allDriver = getDs().find(Driver.class).order(sort).offset(offset).limit(count).asList();                
             res.status(200);
             return dataToJson.d2j(allDriver);
         } catch (Exception e) {
