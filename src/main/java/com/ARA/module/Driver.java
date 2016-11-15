@@ -1,8 +1,8 @@
 package com.ARA.module;
 
 import com.ARA.util.PasswordEncoder;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +11,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 @Entity("driver")
-@JsonIgnoreProperties({"password"})
+@JsonIgnoreProperties({"password", "cars", "rides"})
 public class Driver {
 
     @Id
@@ -28,6 +28,9 @@ public class Driver {
     private String phoneNumber;
     private String drivingLicense;
     private String licensedState;
+
+    private List<String> cars;
+    private List<String> rides;
 
     /**
      * keep an empty constructor so that morphia
@@ -68,7 +71,7 @@ public class Driver {
         this.zip = zip;
         this.phoneNumber = phoneNumber;
         this.drivingLicense = drivingLicense;
-        this.licensedState = licensedState;             
+        this.licensedState = licensedState;
     }
 
     public String getId() {
@@ -173,6 +176,20 @@ public class Driver {
 
     public void setLicensedState(String licensedState) {
         this.licensedState = licensedState;
+    }
+
+    public List<String> getCars() { return cars; }
+
+    public void addCar(String carId) {
+
+        if (cars == null)
+            this.cars = new ArrayList<>(Arrays.asList(carId));
+        else
+            this.cars.add(carId);
+    }
+
+    public List<String> getRides() {
+        return rides;
     }
 
     public boolean isValidDriver () {
