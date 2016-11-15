@@ -83,7 +83,11 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             String zip = jsonObject.get("zip").toString().replaceAll("\"", "");   
             String phoneNumber = jsonObject.get("phoneNumber").toString().replaceAll("\"", "");    
             String drivingLicense = jsonObject.get("drivingLicense").toString().replaceAll("\"", "");                    
-            String licensedState = jsonObject.get("licensedState").toString().replaceAll("\"", "");      
+            String licensedState = jsonObject.get("licensedState").toString().replaceAll("\"", "");
+            if (password.length() > 20 || password.length() < 8) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+            }
 
             Driver newDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber,drivingLicense,licensedState);
 
@@ -126,6 +130,10 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (jsonObject.has("password")) {
                 String password = jsonObject.get("password").toString().replaceAll("\"", "");
+                if (password.length() > 20 || password.length() < 8) {
+                    res.status(400);
+                    return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                }
                 driver.setPassword(password);
             }
 

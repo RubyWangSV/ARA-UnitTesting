@@ -1,5 +1,6 @@
 package com.ARA.module;
 
+import com.ARA.util.PasswordEncoder;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class Driver {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.password = password;       
+        this.password = new PasswordEncoder().encode(password);
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.city = city;   
@@ -103,7 +104,7 @@ public class Driver {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = new PasswordEncoder().encode(password);
     }
 
     public String getAddressLine1() {
