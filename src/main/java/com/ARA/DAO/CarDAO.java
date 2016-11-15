@@ -63,7 +63,7 @@ public class CarDAO extends BasicDAO<Car, String> {
     public String createCar(Request req, Response res) throws IOException {
         try {
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-            boolean valid = true;
+
             String make = jsonObject.get("make").toString().replaceAll("\"", "");
 
             String model = jsonObject.get("model").toString().replaceAll("\"", "");

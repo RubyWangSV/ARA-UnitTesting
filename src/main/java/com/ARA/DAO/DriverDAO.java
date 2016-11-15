@@ -12,8 +12,7 @@ import spark.Request;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -35,18 +34,16 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
     public String getAllDrivers(Request req, Response res) throws IOException{
         try {
-            // ArrayList<String> Params = new ArrayList<String>();
 
-            Integer count = Integer.valueOf(req.queryParams("count"));
-            Integer offset = Integer.valueOf(req.queryParams("offset"));
-            String sort = req.queryParams("sort");
-            String sortOrder = req.queryParams("sortOrder");
+            Integer count = req.queryParams().contains("count") ? Integer.valueOf(req.queryParams("count")) : 2147483647;
+            Integer offsetId = req.queryParams().contains("offsetId") ? Integer.valueOf(req.queryParams("offsetId")) : 0;
+            String sortBy = req.queryParams().contains("sort") ? req.queryParams("sort") : "_id";
 
-            if( count == null)  count = 2147483647;
-            if( offset == null)  offset = 0;
-            if( sort == null)  sort = "_id";
+            if (req.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(req.queryParams("sortOrder")))
+                sortBy = "-" + sortBy;
 
-            List<Driver> allDriver = getDs().find(Driver.class).order(sort).offset(offset).limit(count).asList();                
+            List<Driver> allDriver = getDs().find(Driver.class).offset(offsetId).limit(count).order(sortBy).asList();
+
             res.status(200);
             return dataToJson.d2j(allDriver);
         } catch (Exception e) {
@@ -74,7 +71,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
     public String createDriver(Request req, Response res) throws IOException{
         try{
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-            boolean valid = true;
+
             String firstName = jsonObject.get("firstName").toString().replaceAll("\"", "");
             String lastName = jsonObject.get("lastName").toString().replaceAll("\"", "");
             String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
