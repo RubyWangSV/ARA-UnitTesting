@@ -3,7 +3,6 @@ package com.ARA.DAO;
 import com.ARA.module.Car;
 
 import com.ARA.util.Error;
-import com.ARA.util.Validate;
 import com.ARA.util.dataToJson;
 
 import com.google.gson.Gson;
@@ -81,7 +80,7 @@ public class CarDAO extends BasicDAO<Car, String> {
 
             Car newCar = new Car(make, model, license, carType, maxPassengers, color, validRideTypes);
 
-            if (!Validate.validCar(newCar)) {
+            if (!newCar.isValidCar()) {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
@@ -145,7 +144,7 @@ public class CarDAO extends BasicDAO<Car, String> {
 
                 car.setValidRideTypes(validRideTypes);
             }
-            if (!Validate.validCar(car)) {
+            if (!car.isValidCar()) {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }

@@ -1,5 +1,6 @@
 package com.ARA.module;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,9 +59,6 @@ public class Car {
         this.color = color;
         this.validRideTypes = validRideTypes;
     }
-
-
-
 
     public String getId() {
         return id;
@@ -124,5 +122,17 @@ public class Car {
 
     public void setValidRideTypes(List<String> validRideTypes) {
         this.validRideTypes = validRideTypes;
+    }
+
+    public boolean isValidCar () {
+        if (make.length() > 50 || model.length() > 50 || carType.length() > 10
+                || license.length() > 10 || color.length() > 20)
+            return false;
+        List<String> rideTypes = Arrays.asList("ECONOMY", "PREMIUM", "EXECUTIVE");
+        for (String type : validRideTypes) {
+            if (!rideTypes.contains(type))
+                return false;
+        }
+        return true;
     }
 }

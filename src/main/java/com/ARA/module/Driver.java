@@ -4,10 +4,12 @@ import com.ARA.util.PasswordEncoder;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 @Entity("driver")
+@JsonIgnoreProperties({"password"})
 public class Driver {
 
     @Id
@@ -169,5 +171,15 @@ public class Driver {
 
     public void setLicensedState(String licensedState) {
         this.licensedState = licensedState;
-    }          
+    }
+
+    public boolean isValidDriver () {
+
+        if (firstName.length() > 50 || lastName.length() > 50 || emailAddress.length() > 50
+                || addressLine1.length() > 100 || addressLine2.length() > 100
+                || city.length() > 50 || state.length() != 2 || zip.length() != 5
+                || drivingLicense.length() > 16 || licensedState.length() > 2)
+            return false;
+        return true;
+    }
 }

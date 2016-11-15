@@ -3,15 +3,11 @@ package com.ARA.DAO;
 import com.ARA.module.Driver;
 
 import com.ARA.util.Error;
-import com.ARA.util.Validate;
 import com.ARA.util.dataToJson;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import spark.Request;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 import com.google.gson.JsonObject;
@@ -91,7 +87,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             Driver newDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber,drivingLicense,licensedState);
 
-            if (!Validate.validDriver(newDriver)) {
+            if (!newDriver.isValidDriver()) {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type - Length"));
             }
@@ -177,7 +173,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                 driver.setLicensedState(licensedState);
             }
 
-            if (!Validate.validDriver(driver)) {
+            if (!driver.isValidDriver()) {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
