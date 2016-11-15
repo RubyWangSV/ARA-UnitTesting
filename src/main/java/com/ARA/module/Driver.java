@@ -3,6 +3,8 @@ package com.ARA.module;
 import com.ARA.util.PasswordEncoder;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
@@ -179,6 +181,10 @@ public class Driver {
                 || addressLine1.length() > 100 || addressLine2.length() > 100
                 || city.length() > 50 || state.length() != 2 || zip.length() != 5
                 || drivingLicense.length() > 16 || licensedState.length() > 2)
+            return false;
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailAddress);
+        if (! matcher.find())
             return false;
         return true;
     }
