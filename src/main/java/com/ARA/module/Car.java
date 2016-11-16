@@ -1,5 +1,6 @@
 package com.ARA.module;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,8 @@ public class Car {
     private String color;
 
     private List<String> validRideTypes;
+
+    private List<String> drivers;
 
     /**
      * keep an empty constructor so that morphia
@@ -122,6 +125,16 @@ public class Car {
 
     public void setValidRideTypes(List<String> validRideTypes) {
         this.validRideTypes = validRideTypes;
+    }
+
+    public List<String> getDrivers() { return this.drivers; }
+
+    public void setDrivers(String driverId) {
+
+        if (drivers == null)
+            this.drivers = new ArrayList<>(Arrays.asList(driverId));
+        else
+            this.drivers.add(driverId);
     }
 
     public boolean isValidCar () {

@@ -259,6 +259,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             List<String> validRideTypes = new Gson().fromJson(jsonObject.get("validRideTypes").getAsJsonArray(), listType);
 
             Car newCar = new Car(make, model, license, carType, maxPassengers, color, validRideTypes);
+            newCar.setDrivers(id);
 
             if (!newCar.isValidCar()) {
                 res.status(400);

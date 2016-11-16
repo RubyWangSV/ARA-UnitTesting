@@ -46,9 +46,9 @@ public class Application {
         // CRUD for Cars
         get(versionURI + "/cars", (req, res) -> carDAO.getAllCars(req, res));
         get(versionURI + "/cars/:id", (req, res) -> carDAO.getCar(req, res));
-        post(versionURI + "/cars", (req, res) -> carDAO.createCar(req, res));
         patch(versionURI + "/cars/:id", (req, res) -> carDAO.updateCar(req, res));
         delete(versionURI + "/cars/:id", (req, res) -> carDAO.deleteCar(req, res));
+        patch(versionURI + "/cars/:id/drivers", (req, res) -> carDAO.getDriver(req, res));
 
         // CRUD for Drivers
         get(versionURI + "/drivers", (req, res) -> driverDAO.getAllDrivers(req, res));

@@ -2,6 +2,7 @@ package com.ARA.DAO;
 
 import com.ARA.module.Car;
 
+import com.ARA.module.Driver;
 import com.ARA.util.Error;
 import com.ARA.util.dataToJson;
 
@@ -65,41 +66,6 @@ public class CarDAO extends BasicDAO<Car, String> {
             }
             res.status(200);
             return dataToJson.d2j(car);
-        } catch (Exception e) {
-            res.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
-        }
-    }
-
-    public String createCar(Request req, Response res) throws IOException {
-        try {
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
-
-            String make = jsonObject.get("make").toString().replaceAll("\"", "");
-
-            String model = jsonObject.get("model").toString().replaceAll("\"", "");
-
-            String license = jsonObject.get("license").toString().replaceAll("\"", "");
-
-            String carType = jsonObject.get("carType").toString().replaceAll("\"", "");
-
-            Integer maxPassengers = Integer.valueOf(jsonObject.get("maxPassengers").toString());
-            String color = jsonObject.get("color").toString().replaceAll("\"", "");
-
-            Type listType = new TypeToken<ArrayList<String>>() {
-            }.getType();
-            List<String> validRideTypes = new Gson().fromJson(jsonObject.get("validRideTypes").getAsJsonArray(), listType);
-
-            Car newCar = new Car(make, model, license, carType, maxPassengers, color, validRideTypes);
-
-            if (!newCar.isValidCar()) {
-                res.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
-            }
-
-            getDs().save(newCar);
-            res.status(200);
-            return dataToJson.d2j(newCar);
         } catch (Exception e) {
             res.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
@@ -181,6 +147,34 @@ public class CarDAO extends BasicDAO<Car, String> {
             getDs().delete(car);
             res.status(200);
             return dataToJson.d2j(car);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
+    }
+
+    public String getDriver(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            Car car = getDs().find(Car.class).field("id").equal(id).get();
+            if (car == null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
+            }
+            List<String> driverIds = car.getDrivers();
+            List<Driver> drivers = new ArrayList<>();
+            if (driverIds.size() > 0) {
+                for (String driverId : driverIds) {
+                    Driver driver = getDs().find(Driver.class).field("id").equal(driverId).get();
+                    if (driver == null) {
+                        res.status(400);
+                        return dataToJson.d2j(new Error(400, 1002, "Given driver does not exist"));
+                    }
+                    drivers.add(driver);
+                }
+            }
+            res.status(200);
+            return dataToJson.d2j(drivers);
         } catch (Exception e) {
             res.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
