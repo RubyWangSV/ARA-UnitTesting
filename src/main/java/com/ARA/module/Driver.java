@@ -203,6 +203,7 @@ public class Driver {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailAddress);
         if (! matcher.find())
             return false;
+
         return true;
     }
 }

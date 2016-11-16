@@ -49,7 +49,7 @@ public class CarDAO extends BasicDAO<Car, String> {
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Car not found"));
+                return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
             }
             res.status(200);
             return dataToJson.d2j(car);
@@ -164,7 +164,7 @@ public class CarDAO extends BasicDAO<Car, String> {
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Car not found"));
+                return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
             }
             getDs().delete(car);
             res.status(200);

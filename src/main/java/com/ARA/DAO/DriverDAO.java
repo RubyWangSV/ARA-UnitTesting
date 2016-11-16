@@ -59,7 +59,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Driver not found"));
+                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             res.status(200);
             return dataToJson.d2j(driver);
@@ -94,7 +94,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (!newDriver.isValidDriver()) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type - Length"));
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(newDriver);
@@ -199,7 +199,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Driver not found"));
+                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             getDs().delete(driver);
             res.status(200);
@@ -216,7 +216,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Driver not found"));
+                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             List<String> carIds = driver.getCars();
             List<Car> cars = new ArrayList<>();
@@ -225,7 +225,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                     Car car = getDs().find(Car.class).field("id").equal(carId).get();
                     if (car == null) {
                         res.status(400);
-                        return dataToJson.d2j(new Error(400, 1000, "Car not found"));
+                        return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
                     }
                     cars.add(car);
                 }
@@ -244,7 +244,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Driver not found"));
+                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             // Create a new car
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
@@ -283,7 +283,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 res.status(400);
-                return dataToJson.d2j(new Error(400, 1000, "Driver not found"));
+                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             List<String> rideIds = driver.getRides();
             List<Ride> rides = new ArrayList<>();
@@ -292,7 +292,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                     Ride ride = getDs().find(Ride.class).field("id").equal(rideId).get();
                     if (ride == null) {
                         res.status(400);
-                        return dataToJson.d2j(new Error(400, 1000, "Ride not found"));
+                        return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
                     }
                     rides.add(ride);
                 }
