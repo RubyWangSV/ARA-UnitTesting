@@ -3,6 +3,7 @@ package com.ARA.DAO;
 import com.ARA.module.Car;
 import com.ARA.module.Ride;
 
+import com.ARA.module.routePoint;
 import com.ARA.util.Error;
 import com.ARA.util.dataToJson;
 import com.google.gson.Gson;
@@ -187,6 +188,35 @@ public class RideDAO extends BasicDAO<Ride, String> {
             getDs().delete(ride);
             res.status(200);
             return dataToJson.d2j(ride);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
+    }
+
+    public String addRoutePoint(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
+            if (ride == null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+            }
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            if (jsonObject.has("timestamp") && jsonObject.has("latitude") && jsonObject.has("longitude")) {
+                String timestamp = jsonObject.get("rideType").toString().replaceAll("\"", "");
+                Double latitude = Double.valueOf(jsonObject.get("latitude").toString());
+                Double longitude = Double.valueOf(jsonObject.get("longitude").toString());
+                routePoint newRoutePoint = new routePoint(timestamp, latitude, longitude);
+                getDs().save(newRoutePoint);
+                ride.addRoutePoints(newRoutePoint);
+                getDs().save(ride);
+                res.status(200);
+                return dataToJson.d2j(newRoutePoint);
+            } else {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+            }
         } catch (Exception e) {
             res.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));

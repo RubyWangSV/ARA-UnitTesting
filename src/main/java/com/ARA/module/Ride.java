@@ -1,5 +1,7 @@
 package com.ARA.module;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +29,12 @@ public class Ride {
     private String status; // [REQUESTED, AWAITING_DRIVER, DRIVE_ASSIGNED, IN_PROGRESS, ARRIVED, CLOSED]
 
     private Double fare;
+
+    private String driver;
+
+    private String passenger;
+
+    private List<routePoint> routePoints;
 
     /**
      * keep an empty constructor so that morphia
@@ -103,6 +111,26 @@ public class Ride {
     public Double getFare() { return fare; }
 
     public void setFare(Double fare) { this.fare = fare; }
+
+    public String getDriver() {return driver; }
+
+    public void setDriver(String driverId) {
+        this.driver = driverId;
+    }
+
+    public String getPassenger() { return passenger; }
+
+    public void setPassenger(String passengerId) { this.passenger = passengerId; }
+
+    public List<routePoint> getRoutePoints() { return routePoints; }
+
+    public void addRoutePoints(routePoint routePoint) {
+
+        if (routePoints == null)
+            this.routePoints = new ArrayList<>(Arrays.asList(routePoint));
+        else
+            this.routePoints.add(routePoint);
+    }
 
     public boolean isValidRide () {
         return true;

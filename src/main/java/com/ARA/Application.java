@@ -77,6 +77,7 @@ public class Application {
         post(versionURI + "/rides", (req, res) -> rideDAO.createRide(req, res));
         patch(versionURI + "/rides/:id", (req, res) -> rideDAO.updateRide(req, res));
         delete(versionURI + "/rides/:id", (req, res) -> rideDAO.deleteRide(req, res));
+        post(versionURI + "/rides/:id/routePoints", (req, res) -> rideDAO.addRoutePoint(req, res));
     }
 
 }
