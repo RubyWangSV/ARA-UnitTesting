@@ -1,12 +1,17 @@
 package com.ARA.module;
 
-import java.util.List;
-import java.util.UUID;
+import com.ARA.util.PasswordEncoder;
 
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 @Entity("passenger")
+@JsonIgnoreProperties({"password", "rides"})
 public class Passenger {
 
     @Id
@@ -22,6 +27,7 @@ public class Passenger {
     private String zip;           
     private String phoneNumber;
 
+    private List<String> rides;
     /**
      * keep an empty constructor so that morphia
      * can recreate this entity fetch it from
@@ -51,7 +57,7 @@ public class Passenger {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.password = password;       
+        this.password = new PasswordEncoder().encode(password);
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.city = city;   
@@ -97,7 +103,7 @@ public class Passenger {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = new PasswordEncoder().encode(password);
     }
 
     public String getAddressLine1() {
@@ -146,5 +152,21 @@ public class Passenger {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }                 
+    }
+    public List<String> getRides() {
+        return rides;
+    }
+
+    public boolean isValidPassenger () {
+        if (firstName.length() > 50 || lastName.length() > 50 || emailAddress.length() > 50
+                || addressLine1.length() > 100 || addressLine2.length() > 100
+                || city.length() > 50 || state.length() != 2 || zip.length() != 5)
+            return false;
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(emailAddress);
+        if (! matcher.find())
+            return false;
+
+        return true;
+    }
 }

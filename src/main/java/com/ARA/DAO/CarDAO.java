@@ -32,6 +32,12 @@ public class CarDAO extends BasicDAO<Car, String> {
         super(entityClass, ds);
     }
 
+    /** This method is used to get all cars.
+     * @param req
+     * @param res
+     * @return all cars
+     * @throws IOException
+     */
     public String getAllCars(Request req, Response res) throws IOException {
         try {
             List<Car> allCar = getDs().find(Car.class).asList();
@@ -43,6 +49,12 @@ public class CarDAO extends BasicDAO<Car, String> {
         }
     }
 
+    /** This method is used to get a specific car from :id.
+     * @param req
+     * @param res
+     * @return The car specified with :id.
+     * @throws IOException
+     */
     public String getCar(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");

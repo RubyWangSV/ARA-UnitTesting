@@ -24,7 +24,7 @@ import spark.Response;
 
 /**
  * implementation of Driver's Data Access Object
- * @author Ruby
+ * @author Edam & Ruby
  *
  */
 public class DriverDAO extends BasicDAO<Driver, String> {

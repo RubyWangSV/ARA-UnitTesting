@@ -103,4 +103,8 @@ public class Ride {
     public Double getFare() { return fare; }
 
     public void setFare(Double fare) { this.fare = fare; }
+
+    public boolean isValidRide () {
+        return true;
+    }
 }

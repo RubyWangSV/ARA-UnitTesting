@@ -44,20 +44,10 @@ public class Application {
         get("/", (req, res) -> "Hello World!");
 
         // CRUD for Cars
-        // GET
-        // get all cars
         get(versionURI + "/cars", (req, res) -> carDAO.getAllCars(req, res));
-        // GET
-        // get car with given id
         get(versionURI + "/cars/:id", (req, res) -> carDAO.getCar(req, res));
-        // POST
-        // create a new car
         post(versionURI + "/cars", (req, res) -> carDAO.createCar(req, res));
-        // POST
-        // update car with given id
         patch(versionURI + "/cars/:id", (req, res) -> carDAO.updateCar(req, res));
-        // DELETE
-        // delete car with given id
         delete(versionURI + "/cars/:id", (req, res) -> carDAO.deleteCar(req, res));
 
         // CRUD for Drivers
@@ -66,33 +56,27 @@ public class Application {
         post(versionURI + "/drivers", (req, res) -> driverDAO.createDriver(req, res));
         patch(versionURI + "/drivers/:id", (req, res) -> driverDAO.updateDriver(req, res));
         delete(versionURI + "/drivers/:id", (req, res) -> driverDAO.deleteDriver(req, res));
+        // Get and create car info of a driver
         get(versionURI + "/drivers/:id/cars", (req, res) -> driverDAO.getCars(req, res));
         post(versionURI + "/drivers/:id/cars", (req, res) -> driverDAO.createCar(req, res));
+        // Get ride info of a driver
         get(versionURI + "/drivers/:id/rides", (req, res) -> driverDAO.getRides(req, res));
-//
-//        // CRUD for Passengers
-//        get(versionURI + "/passengers", (req, res) -> passengerDAO.getAllPassengers(req, res));
-//        get(versionURI + "/passengers/:id", (req, res) -> passengerDAO.getPassenger(req, res));
-//        post(versionURI + "/passengers", (req, res) -> passengerDAO.createPassenger(req, res));
-//        patch(versionURI + "/passengers/:id", (req, res) -> passengerDAO.updatePassenger(req, res));
-//        delete(versionURI + "/passengers/:id", (req, res) -> passengerDAO.deletePassenger(req, res));
-//
-//        // CRUD for Rides
-//        // GET
-//        // get all rides
-//        get(versionURI + "/rides", (req, res) -> rideDAO.getAllRides(req, res));
-//        // GET
-//        // get ride with given id
-//        get(versionURI + "/rides/:id", (req, res) -> rideDAO.getRide(req, res));
-//        // POST
-//        // create a new ride
-//        post(versionURI + "/rides", (req, res) -> rideDAO.createRide(req, res));
-//        // POST
-//        // update ride with given id
-//        post(versionURI + "/rides/:id", (req, res) -> rideDAO.updateRide(req, res));
-//        // DELETE
-//        // delete ride with given id
-//        delete(versionURI + "/rides/:id", (req, res) -> rideDAO.deleteRide(req, res));
+
+        // CRUD for Passengers
+        get(versionURI + "/passengers", (req, res) -> passengerDAO.getAllPassengers(req, res));
+        get(versionURI + "/passengers/:id", (req, res) -> passengerDAO.getPassenger(req, res));
+        post(versionURI + "/passengers", (req, res) -> passengerDAO.createPassenger(req, res));
+        patch(versionURI + "/passengers/:id", (req, res) -> passengerDAO.updatePassenger(req, res));
+        delete(versionURI + "/passengers/:id", (req, res) -> passengerDAO.deletePassenger(req, res));
+        // Get ride info of a driver
+        get(versionURI + "/passengers/:id/rides", (req, res) -> passengerDAO.getRides(req, res));
+
+        // CRUD for Rides
+        get(versionURI + "/rides", (req, res) -> rideDAO.getAllRides(req, res));
+        get(versionURI + "/rides/:id", (req, res) -> rideDAO.getRide(req, res));
+        post(versionURI + "/rides", (req, res) -> rideDAO.createRide(req, res));
+        patch(versionURI + "/rides/:id", (req, res) -> rideDAO.updateRide(req, res));
+        delete(versionURI + "/rides/:id", (req, res) -> rideDAO.deleteRide(req, res));
     }
 
 }
