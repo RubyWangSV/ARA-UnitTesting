@@ -14,6 +14,13 @@ import javax.crypto.spec.PBEKeySpec;
  * @author Edam
  */
 public final class PasswordEncoder {
+
+    /** This method is used to validate password.
+     * @param originalPassword
+     * @param storedPassword
+     * @return true-same / false-different.
+     * @throws NoSuchAlgorithmException, InvalidKeySpecException
+     */  
     public static boolean validatePassword(String originalPassword, String storedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         if (storedPassword == null) return false;
@@ -39,6 +46,11 @@ public final class PasswordEncoder {
         return diff == 0;
     }
 
+    /** This method is used to encode password.
+     * @param password
+     * @return encoded password.
+     * @throws NoSuchAlgorithmException, InvalidKeySpecException
+     */  
     public static String encode(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         int iterations = 1000;
@@ -51,6 +63,7 @@ public final class PasswordEncoder {
         return iterations + ":" + toHex(salt) + ":" + toHex(hash);
 
     }
+
 
     private static String getSalt() throws NoSuchAlgorithmException
     {
