@@ -1,5 +1,11 @@
 package com.ARA.util;
 
+/**
+ * implementation to token
+ * @author Edam
+ * @version 2.0.0
+ */
+
 public class token {
     private String token;
 

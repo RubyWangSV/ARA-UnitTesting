@@ -9,10 +9,11 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 /**
- *
- *
+ * implementation to password encode
  * @author Edam
+ * @version 2.0.0
  */
+
 public final class PasswordEncoder {
 
     /** This method is used to validate password.

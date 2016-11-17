@@ -62,7 +62,7 @@ public class Application {
         get("/", (req, res) -> "Hello World!");
 
         // session
-        post(versionURI + "/session", (req, res) -> {
+        post(versionURI + "/sessions", (req, res) -> {
             try {
 
                 JsonObject reqBody = (JsonObject) new JsonParser().parse(req.body());
