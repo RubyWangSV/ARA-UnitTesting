@@ -1,115 +1,85 @@
-/**
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
- *
- *     http://www.apache.org/licenses/LICENSE-2.0 
- *
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
- * limitations under the License. 
- */
-
 package com.ARA.util;
 
-import org.apache.commons.lang.exception.NestableRuntimeException;
-
-import java.security.MessageDigest;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 /**
- * {@link PasswordEncoder} that uses SHA1 to create a secure password hash. Before the hash is taken the password string 
- * is combined with a 44 byte random salt value. This function produces a 128 character output that combines the hash 
- * and the salt. 
  *
- * @author igor.vaynberg
+ *
+ * @author Edam
  */
 public final class PasswordEncoder {
-    private static final char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
-            'B', 'C', 'D', 'E', 'F'};
+    public static boolean validatePassword(String originalPassword, String storedPassword) throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        if (storedPassword == null) return false;
 
-    /*
-     * (non-Javadoc) 
-     *  
-     * @see com.inertiabev.biggie.service.security.PasswordEncoder#matches(java.lang.String, 
-     *      java.lang.String) 
-     */
-    public final boolean check(String password, String encodedPassword) {
-        if (password == null) {
-            throw new IllegalArgumentException("Argument `password` cannot be null");
-        }
-        if (encodedPassword == null) {
-            throw new IllegalArgumentException("Argument `encodedPassword` cannot be null");
-        }
-        if (encodedPassword.length() != 128) {
-            throw new IllegalArgumentException(
-                    "Argument `encodedPassword` does not contain a string encrypted using: " +
-                            getClass().getName());
+        String[] parts = storedPassword.split(":");
+        int iterations = Integer.parseInt(parts[0]);
+        byte[] salt = fromHex(parts[1]);
+        byte[] hash = fromHex(parts[2]);
+
+        PBEKeySpec spec = new PBEKeySpec(originalPassword.toCharArray(), salt, iterations, hash.length * 8);
+
+        SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+
+        byte[] testHash = skf.generateSecret(spec).getEncoded();
+
+        int diff = hash.length ^ testHash.length;
+
+        for(int i = 0; i < hash.length && i < testHash.length; i++)
+        {
+            diff |= hash[i] ^ testHash[i];
         }
 
-        String salt = encodedPassword.substring(0, 44) + encodedPassword.substring(84, 128);
-        String hash = encodedPassword.substring(44, 84);
-
-        return hash.equals(hash(password, salt));
+        return diff == 0;
     }
 
-    /**
-     * Creates the hash of the password and concatenated salt 
-     *
-     * @param password password string 
-     * @param salt     salt string 
-     * @return SHA1 hash of concatenated password and salt 
-     */
-    private String hash(String password, String salt) {
-        String saltedPassword = salt + password;
-        MessageDigest sha1;
-        try {
-            sha1 = MessageDigest.getInstance("SHA1");
-            sha1.update(saltedPassword.getBytes());
-            byte[] saltedHash = sha1.digest();
+    public static String encode(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        int iterations = 1000;
+        char[] chars = password.toCharArray();
+        byte[] salt = getSalt().getBytes();
 
-            return bytesToHexString(saltedHash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new NestableRuntimeException(e);
-        }
+        PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
+        SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] hash = skf.generateSecret(spec).getEncoded();
+        return iterations + ":" + toHex(salt) + ":" + toHex(hash);
+
     }
 
-    /*
-     * (non-Javadoc) 
-     *  
-     * @see com.inertiabev.biggie.service.security.PasswordEncoder#encode(java.lang.String) 
-     */
-    public final String encode(String password) {
-        try {
-            byte[] saltBytes = new byte[44];
-            SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-            random.nextBytes(saltBytes);
-            String salt = bytesToHexString(saltBytes);
-            String hash = hash(password, salt);
-            return salt.substring(0, 44) + hash + salt.substring(44, 88);
-        } catch (Exception e) {
-            throw new NestableRuntimeException(e);
+    private static String getSalt() throws NoSuchAlgorithmException
+    {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        return salt.toString();
+    }
+
+    private static String toHex(byte[] array) throws NoSuchAlgorithmException
+    {
+        BigInteger bi = new BigInteger(1, array);
+        String hex = bi.toString(16);
+        int paddingLength = (array.length * 2) - hex.length();
+        if(paddingLength > 0)
+        {
+            return String.format("%0"  +paddingLength + "d", 0) + hex;
+        }else{
+            return hex;
         }
     }
 
-    /**
-     * Converts bytes to their hexadecimal string representation 
-     *
-     * @param bytes bytes to convert 
-     * @return hexadecimal string 
-     */
-    private static String bytesToHexString(byte[] bytes) {
-        StringBuffer sb = new StringBuffer(bytes.length * 2);
-        for (int i = 0; i < bytes.length; i++) {
-            final byte b = bytes[i];
-            final char high = hexChars[(b & 0xF0) >> 4];
-            final char low = hexChars[b & 0x0F];
-            sb.append(high);
-            sb.append(low);
+    private static byte[] fromHex(String hex) throws NoSuchAlgorithmException
+    {
+        byte[] bytes = new byte[hex.length() / 2];
+        for(int i = 0; i<bytes.length ;i++)
+        {
+            bytes[i] = (byte)Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
         }
-        return sb.toString();
+        return bytes;
     }
 }

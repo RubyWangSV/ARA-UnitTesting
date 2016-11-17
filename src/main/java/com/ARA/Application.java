@@ -6,12 +6,23 @@ import com.ARA.util.*;
 
 import static spark.Spark.*;
 
+import com.ARA.util.Error;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import io.jsonwebtoken.JwtBuilder;
+import org.mongodb.morphia.query.Query;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.MacProvider;
 
 
 public class Application {
@@ -42,6 +53,70 @@ public class Application {
 
         // server test
         get("/", (req, res) -> "Hello World!");
+
+        // session
+        post(versionURI + "/session", (req, res) -> {
+            try {
+
+                JsonObject reqBody = (JsonObject) new JsonParser().parse(req.body());
+                String email = reqBody.get("email").toString().replaceAll("\"", "");
+                String password = reqBody.get("password").toString().replaceAll("\"", "");
+                Driver driver = driverDAO.createQuery()
+                        .filter("emailAddress", email)
+                        .get();
+
+                Passenger passenger = passengerDAO.createQuery()
+                        .filter("emailAddress", email)
+                        .get();
+
+                String driverPassword = driver != null ? driver.getPassword() : null;
+                String passengerPassword = passenger != null ? passenger.getPassword() : null;
+
+                PasswordEncoder pe = new PasswordEncoder();
+
+                boolean isDriver = pe.validatePassword(password, driverPassword);
+                boolean isPassenger = pe.validatePassword(password, passengerPassword);
+
+                if (!isDriver && !isPassenger) {
+                    res.status(400);
+                    return dataToJson.d2j(new Error(400, 9001, "Wrong username or password"));
+                }
+
+                String userId = (driver != null) ? driver.getId() : passenger.getId();
+
+                // the JWT signature algorithm will be using to sign the token
+                SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+                long nowMillis = System.currentTimeMillis();
+                Date now = new Date(nowMillis);
+
+                // sign JWT with key secret
+                String key = "thunderbird";
+
+                // set the JWT Claims, userId as body
+                JwtBuilder builder = Jwts.builder()
+                        .setIssuedAt(now)
+                        .setSubject(userId)
+                        .signWith(signatureAlgorithm, key);
+
+                // token will expired in 10 min
+                long ttlMillis = 10 * 60 * 1000;
+                long expMillis = nowMillis + ttlMillis;
+                Date exp = new Date(expMillis);
+                builder.setExpiration(exp);
+
+                String tokenString = builder.compact();
+
+                token token = new token(tokenString);
+
+                res.status(200);
+                return dataToJson.d2j(token);
+
+            } catch (Exception e) {
+                res.status(500);
+                return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            }
+        });
 
         // CRUD for Cars
         get(versionURI + "/cars", (req, res) -> carDAO.getAllCars(req, res));

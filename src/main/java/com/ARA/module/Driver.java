@@ -69,7 +69,11 @@ public class Driver {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
-        this.password = new PasswordEncoder().encode(password);
+        try {
+            this.password = new PasswordEncoder().encode(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.city = city;   
@@ -117,7 +121,11 @@ public class Driver {
     }
 
     public void setPassword(String password) {
-        this.password = new PasswordEncoder().encode(password);
+        try {
+            this.password = new PasswordEncoder().encode(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getAddressLine1() {

@@ -23,5 +23,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
     compile 'commons-lang:commons-lang:2.6'
 
+    compile 'io.jsonwebtoken:jjwt:0.7.0'
+
     testCompile 'junit:junit:4.12'
 }
