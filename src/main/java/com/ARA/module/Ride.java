@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 @Entity("ride")
+@JsonIgnoreProperties({"validRide"})
 public class Ride {
 
     @Id
@@ -133,6 +135,14 @@ public class Ride {
     }
 
     public boolean isValidRide () {
+
+        List<String> rideTypes = Arrays.asList("ECONOMY", "PREMIUM", "EXECUTIVE");
+        if (!rideTypes.contains(rideType))
+            return false;
+        List<String> statusTypes = Arrays.asList("REQUESTED", "AWAITING_DRIVER", "DRIVE_ASSIGNED", "IN_PROGRESS",
+                "ARRIVED", "CLOSED");
+        if (!statusTypes.contains(status))
+            return false;
         return true;
     }
 }

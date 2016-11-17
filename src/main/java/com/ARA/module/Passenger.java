@@ -11,7 +11,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 @Entity("passenger")
-@JsonIgnoreProperties({"password", "rides"})
+@JsonIgnoreProperties({"validPassenger", "password"})
 public class Passenger {
 
     @Id

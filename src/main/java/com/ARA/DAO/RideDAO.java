@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -204,7 +206,7 @@ public class RideDAO extends BasicDAO<Ride, String> {
             }
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
             if (jsonObject.has("timestamp") && jsonObject.has("latitude") && jsonObject.has("longitude")) {
-                String timestamp = jsonObject.get("rideType").toString().replaceAll("\"", "");
+                Long timestamp = Long.valueOf(jsonObject.get("timestamp").toString());
                 Double latitude = Double.valueOf(jsonObject.get("latitude").toString());
                 Double longitude = Double.valueOf(jsonObject.get("longitude").toString());
                 routePoint newRoutePoint = new routePoint(timestamp, latitude, longitude);
@@ -217,6 +219,42 @@ public class RideDAO extends BasicDAO<Ride, String> {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
+    }
+
+    public String getRoutePoints(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
+            if (ride == null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+            }
+            List<routePoint> routePoints = ride.getRoutePoints();
+            Collections.sort(routePoints, Comparator.comparing(routePoint::getTimestamp));
+            res.status(200);
+            return dataToJson.d2j(routePoints);
+        } catch (Exception e) {
+            res.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
+    }
+
+    public String getLastestRoutePoints(Request req, Response res) throws IOException {
+        try {
+            String id = req.params(":id");
+            Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
+            if (ride == null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+            }
+            List<routePoint> routePoints = ride.getRoutePoints();
+            Collections.sort(routePoints, Comparator.comparing(routePoint::getTimestamp));
+            res.status(200);
+            return dataToJson.d2j(routePoints.get(routePoints.size() - 1));
         } catch (Exception e) {
             res.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));

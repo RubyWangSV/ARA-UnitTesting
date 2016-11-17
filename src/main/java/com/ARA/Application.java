@@ -78,6 +78,8 @@ public class Application {
         patch(versionURI + "/rides/:id", (req, res) -> rideDAO.updateRide(req, res));
         delete(versionURI + "/rides/:id", (req, res) -> rideDAO.deleteRide(req, res));
         post(versionURI + "/rides/:id/routePoints", (req, res) -> rideDAO.addRoutePoint(req, res));
+        get(versionURI + "/rides/:id/routePoints", (req, res) -> rideDAO.getRoutePoints(req, res));
+        get(versionURI + "/rides/:id/routePoints/latest", (req, res) -> rideDAO.getLastestRoutePoints(req, res));
     }
 
 }
