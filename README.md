@@ -17,3 +17,4 @@ RESTful APIs for a ride-sharing platform implemented with Spark Framwork and Mor
 | 9001       | Authentication failed. Wrong username or password | None               | None       |
 | 9002       | Failed to authenticate token             | All Resources      | None       |
 | 9003       | No token provided                        | All Resources      | None       |
+| 9004       | Token expired                            | All Resources      | None       |
