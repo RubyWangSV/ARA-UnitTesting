@@ -25,7 +25,7 @@ import spark.Response;
 /**
  * implementation of Car's Data Access Object
  * @author Edam
- *
+ * @version 2.0.0
  */
 public class CarDAO extends BasicDAO<Car, String> {
 
@@ -50,7 +50,7 @@ public class CarDAO extends BasicDAO<Car, String> {
         }
     }
 
-    /** This method is used to get a specific car from :id.
+    /** This method is used to get a specific car with :id.
      * @param req
      * @param res
      * @return The car specified with :id.
@@ -72,6 +72,12 @@ public class CarDAO extends BasicDAO<Car, String> {
         }
     }
 
+    /** This method is used to update a specific car with :id.
+     * @param req
+     * @param res
+     * @return The car specified with :id.
+     * @throws IOException
+     */    
     public String updateCar(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -136,6 +142,12 @@ public class CarDAO extends BasicDAO<Car, String> {
         }
     }
 
+    /** This method is used to delete a specific car with :id.
+     * @param req
+     * @param res
+     * @return The car specified with :id.
+     * @throws IOException
+     */    
     public String deleteCar(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -153,6 +165,12 @@ public class CarDAO extends BasicDAO<Car, String> {
         }
     }
 
+    /** This method is used to get the driver info of a specific car with :id.
+     * @param req
+     * @param res
+     * @return The driver info of a specific car with :id.
+     * @throws IOException
+     */    
     public String getDriver(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");

@@ -6,6 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+/**
+ * implementation of Car
+ * @author Edam
+ * @version 2.0.0
+ */
+
 @Entity("routepoint")
 @JsonIgnoreProperties({"validRoutePoint"})
 public class routePoint {

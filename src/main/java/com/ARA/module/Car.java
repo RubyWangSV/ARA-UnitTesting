@@ -10,6 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+/**
+ * implementation of Car
+ * @author Edam & Ruby
+ * @version 2.0.0
+ */
+
 @Entity("car")
 @JsonIgnoreProperties({"validCar"})
 public class Car {
@@ -140,6 +146,9 @@ public class Car {
             this.drivers.add(driverId);
     }
 
+    /** This method is used to valid the car data.
+     * @return true - valid / false - invalid.
+     */
     public boolean isValidCar () {
         if (make.length() > 50 || model.length() > 50 || carType.length() > 10
                 || license.length() > 10 || color.length() > 20)

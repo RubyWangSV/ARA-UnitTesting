@@ -48,7 +48,7 @@ public class Application {
         get(versionURI + "/cars/:id", (req, res) -> carDAO.getCar(req, res));
         patch(versionURI + "/cars/:id", (req, res) -> carDAO.updateCar(req, res));
         delete(versionURI + "/cars/:id", (req, res) -> carDAO.deleteCar(req, res));
-        patch(versionURI + "/cars/:id/drivers", (req, res) -> carDAO.getDriver(req, res));
+        get(versionURI + "/cars/:id/drivers", (req, res) -> carDAO.getDriver(req, res));
 
         // CRUD for Drivers
         get(versionURI + "/drivers", (req, res) -> driverDAO.getAllDrivers(req, res));

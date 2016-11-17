@@ -21,7 +21,7 @@ import spark.Response;
 /**
  * implementation of Passenger's Data Access Object
  * @author Edam & Ruby
- *
+ * @version 2.0.0
  */
 public class PassengerDAO extends BasicDAO<Passenger, String> {
 
@@ -29,6 +29,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         super(entityClass, ds);
     }
 
+    /** This method is used to get all passengers.
+     * @param req
+     * @param res
+     * @return all passengers
+     * @throws IOException
+     */
     public String getAllPassengers(Request req, Response res) throws IOException{
          try {
 
@@ -49,6 +55,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
          }
     }
 
+    /** This method is used to get a specific passenger with :id.
+     * @param req
+     * @param res
+     * @return The passenger specified with :id.
+     * @throws IOException
+     */
     public String getPassenger(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -65,6 +77,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         }
     }
 
+    /** This method is used to create a passenger.
+     * @param req
+     * @param res
+     * @return The passenger created.
+     * @throws IOException
+     */ 
     public String createPassenger(Request req, Response res) throws IOException{
         try{
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
@@ -101,6 +119,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         }
     }
 
+    /** This method is used to update a specific passenger with :id.
+     * @param req
+     * @param res
+     * @return The passenger specified with :id.
+     * @throws IOException
+     */    
     public String updatePassenger(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -177,6 +201,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
     }
 
+    /** This method is used to delete a specific passenger with :id.
+     * @param req
+     * @param res
+     * @return The passenger with :id.
+     * @throws IOException
+     */ 
     public String deletePassenger(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -194,6 +224,13 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         }
     }
 
+
+    /** This method is used to get the ride info of a specific passenger with :id.
+     * @param req
+     * @param res
+     * @return The ride info of a specific passenger with :id.
+     * @throws IOException
+     */ 
     public String getRides(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");

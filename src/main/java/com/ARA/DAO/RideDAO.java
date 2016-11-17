@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 /**
  * implementation of Ride's Data Access Object
  * @author Edam
- *
+ * @version 2.0.0
  */
 public class RideDAO extends BasicDAO<Ride, String> {
 
@@ -39,6 +39,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         super(entityClass, ds);
     }
 
+    /** This method is used to get all rides.
+     * @param req
+     * @param res
+     * @return all rides
+     * @throws IOException
+     */
     public String getAllRides(Request req, Response res) throws IOException {
         try {
 
@@ -59,6 +65,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to get a specific ride with :id.
+     * @param req
+     * @param res
+     * @return The ride specified with :id.
+     * @throws IOException
+     */
     public String getRide(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -75,6 +87,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to create a ride.
+     * @param req
+     * @param res
+     * @return The ride created.
+     * @throws IOException
+     */
     public String createRide(Request req, Response res) throws IOException{
         try{
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
@@ -113,6 +131,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to update a specific ride with :id.
+     * @param req
+     * @param res
+     * @return The ride specified with :id.
+     * @throws IOException
+     */    
     public String updateRide(Request req, Response res) throws IOException {
         try{
             String id = req.params(":id");
@@ -179,6 +203,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to delete a specific ride with :id.
+     * @param req
+     * @param res
+     * @return The ride specified with :id.
+     * @throws IOException
+     */
     public String deleteRide(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -196,6 +226,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to add a route point of a ride.
+     * @param req
+     * @param res
+     * @return The route point created.
+     * @throws IOException
+     */
     public String addRoutePoint(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -225,6 +261,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to get all route points of a specific ride with :id.
+     * @param req
+     * @param res
+     * @return The route points of a specific ride with :id.
+     * @throws IOException
+     */
     public String getRoutePoints(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -243,6 +285,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
+    /** This method is used to get the lastest route point of a specific ride with :id.
+     * @param req
+     * @param res
+     * @return The lastest route point of a specific ride with :id.
+     * @throws IOException
+     */
     public String getLastestRoutePoints(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");

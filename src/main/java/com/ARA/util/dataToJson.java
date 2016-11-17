@@ -8,10 +8,19 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 /**
- * Convert Object to Json
+ * implementation of Convert Object to Json
+ * @author Edam
+ * @version 2.0.0
  */
+
+
 public class dataToJson {
-    // convert Object data to Json format
+
+    /** This method is used to Convert Object data to Json format
+     * @param data
+     * @return Json format.
+     * @throws IOException
+     */ 
     public static String d2j(Object data) throws IOException {
         try {
             ObjectMapper mapper = new ObjectMapper();

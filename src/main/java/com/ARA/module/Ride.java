@@ -9,6 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+/**
+ * implementation of Car
+ * @author Edam & Ruby
+ * @version 2.0.0
+ */
+
 @Entity("ride")
 @JsonIgnoreProperties({"validRide"})
 public class Ride {
@@ -134,6 +140,9 @@ public class Ride {
             this.routePoints.add(routePoint);
     }
 
+    /** This method is used to valid the ride data.
+     * @return true - valid / false - invalid.
+     */
     public boolean isValidRide () {
 
         List<String> rideTypes = Arrays.asList("ECONOMY", "PREMIUM", "EXECUTIVE");

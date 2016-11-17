@@ -12,10 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * response body when error occurs
+ * implementation of response body when error occurs
  * @author Edam
- *
+ * @version 2.0.0
  */
+
 public class Error {
 
     public Integer statusCode;

@@ -25,7 +25,7 @@ import spark.Response;
 /**
  * implementation of Driver's Data Access Object
  * @author Edam & Ruby
- *
+ * @version 2.0.0
  */
 public class DriverDAO extends BasicDAO<Driver, String> {
 
@@ -33,6 +33,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         super(entityClass, ds);
     }
 
+    /** This method is used to get all drivers.
+     * @param req
+     * @param res
+     * @return all drivers
+     * @throws IOException
+     */
     public String getAllDrivers(Request req, Response res) throws IOException{
         try {
 
@@ -53,6 +59,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         }
     }
 
+    /** This method is used to get a specific driver with :id.
+     * @param req
+     * @param res
+     * @return The driver specified with :id.
+     * @throws IOException
+     */
     public String getDriver(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -69,6 +81,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         }
     }
 
+    /** This method is used to create a driver.
+     * @param req
+     * @param res
+     * @return The driver created.
+     * @throws IOException
+     */ 
     public String createDriver(Request req, Response res) throws IOException{
         try{
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
@@ -107,6 +125,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         }
     }
 
+    /** This method is used to update a specific driver with :id.
+     * @param req
+     * @param res
+     * @return The driver specified with :id.
+     * @throws IOException
+     */    
     public String updateDriver(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -193,6 +217,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
     }
 
+    /** This method is used to delete a specific driver with :id.
+     * @param req
+     * @param res
+     * @return The driver with :id.
+     * @throws IOException
+     */ 
     public String deleteDriver(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -210,6 +240,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         }
     }
 
+    /** This method is used to get the car info of a specific driver with :id.
+     * @param req
+     * @param res
+     * @return The car info of a specific driver with :id.
+     * @throws IOException
+     */ 
     public String getCars(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -238,6 +274,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         }
     }
 
+    /** This method is used to create cars of a specific driver with :id.
+     * @param req
+     * @param res
+     * @return The newe car created for a specific driver with :id.
+     * @throws IOException
+     */ 
     public String createCar(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");
@@ -278,6 +320,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
         }
     }
 
+    /** This method is used to get the ride info of a specific driver with :id.
+     * @param req
+     * @param res
+     * @return The ride info of a specific driver with :id.
+     * @throws IOException
+     */ 
     public String getRides(Request req, Response res) throws IOException {
         try {
             String id = req.params(":id");

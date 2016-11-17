@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * holds our Morphia and Datastore instances
+ * implementation to hold our Morphia and Datastore instances
  * @author Edam
- *
+ * @version 2.0.0
  */
+
 public class MorphiaService {
 
     private Morphia morphia;

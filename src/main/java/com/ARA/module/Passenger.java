@@ -10,6 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+/**
+ * implementation of Car
+ * @author Edam & Ruby
+ * @version 2.0.0
+ */
+
 @Entity("passenger")
 @JsonIgnoreProperties({"validPassenger", "password"})
 public class Passenger {
@@ -157,6 +163,9 @@ public class Passenger {
         return rides;
     }
 
+    /** This method is used to valid the passenger data.
+     * @return true - valid / false - invalid.
+     */
     public boolean isValidPassenger () {
         if (firstName.length() > 50 || lastName.length() > 50 || emailAddress.length() > 50
                 || addressLine1.length() > 100 || addressLine2.length() > 100
