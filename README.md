@@ -12,6 +12,7 @@ RESTful APIs for a ride-sharing platform implemented with Spark Framwork and Mor
 | 1004       | Given passenger does not exist           | `passengers`       | None       |
 | 1005       | Given ride does not exist                | `ride`             | None       |
 | 2000       | Invalid data type                        | All Resources      | None       |
+| 3000       | Email address already taken              | `passenger`, `driver` | None       |
 | 5000       | Exception                                | All Resources      | None       |
 | 9001       | Authentication failed. Wrong username or password | None               | None       |
 | 9002       | Failed to authenticate token             | All Resources      | None       |

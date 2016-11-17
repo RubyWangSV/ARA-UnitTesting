@@ -3,6 +3,7 @@ package com.ARA.DAO;
 import com.ARA.module.Car;
 import com.ARA.module.Driver;
 
+import com.ARA.module.Passenger;
 import com.ARA.module.Ride;
 import com.ARA.util.Error;
 import com.ARA.util.dataToJson;
@@ -110,6 +111,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             Driver newDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber,drivingLicense,licensedState);
 
+            if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
+                    || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+            }
+
             if (!newDriver.isValidDriver()) {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
@@ -150,6 +157,11 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (jsonObject.has("emailAddress")) {
                 String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
+                if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
+                        || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
+                    res.status(400);
+                    return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+                }
                 driver.setEmailAddress(emailAddress);
             }
 

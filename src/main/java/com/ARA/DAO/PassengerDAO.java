@@ -1,5 +1,6 @@
 package com.ARA.DAO;
 
+import com.ARA.module.Driver;
 import com.ARA.module.Passenger;
 
 import com.ARA.module.Ride;
@@ -104,6 +105,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             Passenger newPassenger = new Passenger(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber);
 
+            if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
+                    || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
+                res.status(400);
+                return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+            }
+
             if (!newPassenger.isValidPassenger()) {
                 res.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
@@ -144,6 +151,11 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             if (jsonObject.has("emailAddress")) {
                 String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
+                if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
+                        || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
+                    res.status(400);
+                    return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+                }
                 passenger.setEmailAddress(emailAddress);
             }
 
