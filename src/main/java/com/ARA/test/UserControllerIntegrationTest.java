@@ -1,0 +1,75 @@
+package com.ARA.test;
+
+import com.ARA.Application;
+import com.google.gson.Gson;
+import org.junit.AfterClass;
+import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import spark.Spark;
+import spark.utils.IOUtils;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by rubywang on 2016/11/23.
+ */
+public class UserControllerIntegrationTest {
+
+    @BeforeClass
+    public static void beforeClass() {
+        Application.main(null);
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        Spark.stop();
+    }
+
+    @Test
+    public void tryGET() {
+        TestResponse res = request("GET", "/v1/drivers");
+        Map<String, String> json = res.json();
+        assertEquals(200, res.status);
+        assertEquals("john", json.get("name"));
+        assertEquals("john@foobar.com", json.get("email"));
+        assertNotNull(json.get("id"));
+    }
+
+    private TestResponse request(String method, String path) {
+        try {
+            URL url = new URL("http://localhost:8080" + path);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(method);
+            connection.setDoOutput(true);
+            connection.connect();
+            String body = IOUtils.toString(connection.getInputStream());
+            System.out.println(body);
+            return new TestResponse(connection.getResponseCode(), body);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Sending request failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private static class TestResponse {
+
+        public final String body;
+        public final int status;
+
+        public TestResponse(int status, String body) {
+            this.status = status;
+            this.body = body;
+
+        }
+
+        public Map<String,String> json() {
+            return new Gson().fromJson(body, HashMap.class);
+        }
+    }
+}
