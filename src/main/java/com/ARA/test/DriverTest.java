@@ -2,14 +2,15 @@ package com.ARA.test;
 
 import com.ARA.Application;
 import com.ARA.module.Driver;
-import com.google.gson.Gson;
-import org.junit.AfterClass;
-
 import static com.ARA.util.dataToJson.d2j;
-import static org.junit.Assert.*;
+import static com.ARA.test.TestResponse.request;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import spark.ResponseTransformer;
+
+import static org.junit.Assert.*;
+
 import spark.Spark;
 import spark.utils.IOUtils;
 
@@ -21,11 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * implementation of Test Structure
- * @author Ruby
+ * implementation of Driver Test
+ * @author Edam & Ruby
  * @version 4.0.0
  */
-public class UserControllerIntegrationTest {
+public class DriverTest {
 
     @BeforeClass
     public static void beforeClass() {
@@ -38,7 +39,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void createDriver() {
+    public void createDriver() throws IOException {
         String firstName = "Bob";
         String lastName = "Azi";
         String emailAddress = "bob.azi@att.com";
@@ -52,16 +53,18 @@ public class UserControllerIntegrationTest {
         String drivingLicense = "X7890";
         String licensedState = "CA";
 
-        Driver newDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber,drivingLicense,licensedState);
+        Driver testDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2, city, state, zip, phoneNumber, drivingLicense, licensedState);
 
-        TestResponse res = request("POST", "/v1/drivers", newDriver);
+        System.out.println(d2j(testDriver));
+
+        TestResponse res = TestResponse.request("POST", "/v1/drivers", d2j(testDriver));
         Map<String, String> json = res.json();
         assertEquals(200, res.status);
 //        assertEquals("zoo", json.get("firstName"));
 //        assertEquals("john@foobar.com", json.get("email"));
         assertNotNull(json.get("id"));
     }
-
+}
 
 //    @Test
 //    public void sessionValidate() {
@@ -100,45 +103,3 @@ public class UserControllerIntegrationTest {
 //        assertNotNull(json.get("id"));
 //    }
 
-    private TestResponse request(String method, String path, Object requestBody) {
-        try {
-            URL url = new URL("http://localhost:8080" + path);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(method);
-            connection.setRequestProperty("Content-Type", "application/json");
-            System.out.println(requestBody);
-            connection.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream (
-                    connection.getOutputStream());
-            wr.writeBytes(d2j(requestBody));
-            wr.close();
-
-            connection.connect();
-            String body = IOUtils.toString(connection.getInputStream());
-
-            return new TestResponse(connection.getResponseCode(), body);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Sending request failed: " + e.getMessage());
-            return null;
-        }
-    }
-
-    private static class TestResponse {
-
-        public final String body;
-        public final int status;
-
-        public TestResponse(int status, String body) {
-            System.out.println(status);
-            System.out.println(body);
-            this.status = status;
-            this.body = body;
-
-        }
-
-        public Map<String,String> json() {
-            return new Gson().fromJson(body, HashMap.class);
-        }
-    }
-}
