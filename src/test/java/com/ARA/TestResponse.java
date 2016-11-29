@@ -1,9 +1,8 @@
-package com.ARA.test;
+package com.ARA;
 
 import com.google.gson.Gson;
 import spark.utils.IOUtils;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -11,7 +10,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ARA.util.dataToJson.d2j;
 import static org.junit.Assert.fail;
 
 /**
@@ -73,7 +71,7 @@ public class TestResponse {
 
     public static TestResponse request(String method, String path, String jsonBody) {
         try {
-            URL url = new URL("http://localhost:4567" + path);
+            URL url = new URL("http://localhost:8080" + path);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
             connection.setDoOutput(true);

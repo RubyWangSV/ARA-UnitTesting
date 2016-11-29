@@ -1,9 +1,5 @@
-package com.ARA.test;
+package com.ARA;
 
-import com.ARA.Application;
-import com.ARA.module.Driver;
-import static com.ARA.util.dataToJson.d2j;
-import static com.ARA.test.TestResponse.request;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -12,13 +8,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import spark.Spark;
-import spark.utils.IOUtils;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,24 +31,22 @@ public class DriverTest {
 
     @Test
     public void createDriver() throws IOException {
-        String firstName = "Bob";
-        String lastName = "Azi";
-        String emailAddress = "bob.azi@att.com";
-        String password = "bobpw";
-        String addressLine1 = "120 El, CA";
-        String addressLine2 = "";
-        String city = "MV";
-        String state = "CA";
-        String zip = "99900";
-        String phoneNumber = "333-999-0000";
-        String drivingLicense = "X7890";
-        String licensedState = "CA";
+        String requestbody = "{" +
+                "'firstName':'Bob'," +
+                "'lastName':'Azi'," +
+                "'emailAddress':'bob.aziadsfsd@att.com'," +
+                "'password':'bobpwasdasdas'," +
+                "'addressLine1':'120 El, CA'," +
+                "'addressLine2':''," +
+                "'city':'MV'," +
+                "'state':'CA'," +
+                "'zip':'99900'," +
+                "'phoneNumber':'333-999-0000'," +
+                "'drivingLicense':'X7890'," +
+                "'licensedState':'CA'" +
+                "}";
 
-        Driver testDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2, city, state, zip, phoneNumber, drivingLicense, licensedState);
-
-        System.out.println(d2j(testDriver));
-
-        TestResponse res = TestResponse.request("POST", "/v1/drivers", d2j(testDriver));
+        TestResponse res = TestResponse.request("POST", "/v1/drivers", requestbody);
         Map<String, String> json = res.json();
         assertEquals(200, res.status);
 //        assertEquals("zoo", json.get("firstName"));
