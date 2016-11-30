@@ -13,7 +13,10 @@ import java.util.Map;
 import static org.junit.Assert.fail;
 
 /**
- * Created by rubywang on 2016/11/28.
+ * implementation of Driver Test
+ * @author Edam & Ruby
+ * @version 4.0.0
+ * Modified from 2https://github.com/mscharhag/blog-examples/blob/master/sparkdemo/src/test/java/com/mscharhag/sparkdemo/UserControllerIntegrationTest.java
  */
 
 public class TestResponse {
@@ -31,43 +34,22 @@ public class TestResponse {
         return new Gson().fromJson(body, HashMap.class);
     }
 
-//    public static TestResponse request(String method, String path) {
-//        try {
-//            URL url = new URL("http://localhost:8080" + path);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod(method);
-//            connection.setDoOutput(true);
-//            connection.connect();
-//            String body = IOUtils.toString(connection.getInputStream());
-//            return new TestResponse(connection.getResponseCode(), body);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            fail("Sending request failed: " + e.getMessage());
-//            return null;
-//        }
-//    }
+    public static TestResponse request(String method, String path) {
+        try {
+            URL url = new URL("http://localhost:8080" + path);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(method);
+            connection.setDoOutput(true);
+            connection.connect();
 
-//    public static TestResponse request(String method, String path, String requestBody) {
-//        try {
-//            URL url = new URL("http://localhost:8080" + path);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod(method);
-//            connection.setRequestProperty("Content-Type", "application/json");
-//            connection.setDoOutput(true);
-//            connection.connect();
-//            DataOutputStream wr = new DataOutputStream (
-//                    connection.getOutputStream());
-//            wr.writeBytes(d2j(requestBody));
-//            wr.close();
-//            String body = IOUtils.toString(connection.getInputStream());
-//
-//            return new TestResponse(connection.getResponseCode(), body);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            fail("Sending request failed: " + e.getMessage());
-//            return null;
-//        }
-//    }
+            String body = IOUtils.toString(connection.getInputStream());
+            return new TestResponse(connection.getResponseCode(), body);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Sending request failed: " + e.getMessage());
+            return null;
+        }
+    }
 
     public static TestResponse request(String method, String path, String jsonBody) {
         try {

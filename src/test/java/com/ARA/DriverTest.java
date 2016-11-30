@@ -1,6 +1,7 @@
 package com.ARA;
 
 
+import com.sun.javafx.beans.IDProperty;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,40 +20,48 @@ import java.util.Map;
  */
 public class DriverTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        Application.main(null);
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        Spark.stop();
-    }
+    String testtestID;
+    int IDD = 5;
+    String requestBody = "{" +
+            "'firstName':'Bob'," +
+            "'lastName':'Azi'," +
+            "'emailAddress':'bob27@att.com'," +
+            "'password':'1234567890'," +
+            "'addressLine1':'120 El, CA'," +
+            "'addressLine2':''," +
+            "'city':'MV'," +
+            "'state':'CA'," +
+            "'zip':'99900'," +
+            "'phoneNumber':'333-999-0000'," +
+            "'drivingLicense':'X7890'," +
+            "'licensedState':'CA'" +
+            "}";
 
     @Test
     public void createDriver() throws IOException {
-        String requestbody = "{" +
-                "'firstName':'Bob'," +
-                "'lastName':'Azi'," +
-                "'emailAddress':'bob.aziadsfsd@att.com'," +
-                "'password':'bobpwasdasdas'," +
-                "'addressLine1':'120 El, CA'," +
-                "'addressLine2':''," +
-                "'city':'MV'," +
-                "'state':'CA'," +
-                "'zip':'99900'," +
-                "'phoneNumber':'333-999-0000'," +
-                "'drivingLicense':'X7890'," +
-                "'licensedState':'CA'" +
-                "}";
 
-        TestResponse res = TestResponse.request("POST", "/v1/drivers", requestbody);
+        TestResponse res = TestResponse.request("POST", "/v1/drivers", requestBody);
         Map<String, String> json = res.json();
         assertEquals(200, res.status);
-//        assertEquals("zoo", json.get("firstName"));
-//        assertEquals("john@foobar.com", json.get("email"));
+        assertEquals("Bob", json.get("firstName"));
+        assertNotNull(json.get("id"));
+
+        testtestID = json.get("id");
+        IDD = 20;
+        System.out.println(testtestID);
+    }
+
+    @Test
+    public void getDriver() throws IOException {
+        System.out.println(IDD);
+        System.out.println(testtestID);
+        TestResponse res = TestResponse.request("GET", "/v1/drivers/"+testtestID+"");
+        Map<String, String> json = res.json();
+        assertEquals(200, res.status);
+        assertEquals("Bob", json.get("firstName"));
         assertNotNull(json.get("id"));
     }
+
 }
 
 //    @Test
@@ -64,9 +73,10 @@ public class DriverTest {
 //    }
 //
 //
+
 //    @Test
-//    public void tryGET() {
-//        TestResponse res = request("GET", "/v1/drivers");
+//    public void tryGET() throws IOException {
+//        TestResponse res = TestResponse.request("GET", "/v1/drivers");
 //        Map<String, String> json = res.json();
 //        assertEquals(200, res.status);
 //        assertNotNull(json.get("id"));
