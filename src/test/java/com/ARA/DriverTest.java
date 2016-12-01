@@ -1,7 +1,5 @@
 package com.ARA;
 
-
-import com.sun.javafx.beans.IDProperty;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,18 +12,21 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * implementation of Driver Test
+ * implementation of Driver Test - CRUD
  * @author Edam & Ruby
  * @version 4.0.0
+ * @Note: Change required every test run -
+ *        1. "emailAddress" in requestBody
  */
 public class DriverTest {
 
-    String testtestID;
-    int IDD = 5;
+    String testDriverID;
+    String testDriverXID;
+    String token;
     String requestBody = "{" +
             "'firstName':'Bob'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'bob27@att.com'," +
+            "'emailAddress':'bob50@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -38,67 +39,40 @@ public class DriverTest {
             "}";
 
     @Test
-    public void createDriver() throws IOException {
+    public void Driver() throws IOException {
 
-        TestResponse res = TestResponse.request("POST", "/v1/drivers", requestBody);
-        Map<String, String> json = res.json();
-        assertEquals(200, res.status);
-        assertEquals("Bob", json.get("firstName"));
-        assertNotNull(json.get("id"));
+        //createDriver
+        TestResponse resPost = TestResponse.request("POST", "/v1/drivers", requestBody);
+        Map<String, String> jsonPost = resPost.json();
+        assertEquals(200, resPost.status);
+        assertEquals("Bob", jsonPost.get("firstName"));
+        assertNotNull(jsonPost.get("id"));
 
-        testtestID = json.get("id");
-        IDD = 20;
-        System.out.println(testtestID);
+        testDriverID = jsonPost.get("id");
+
+        //getDriver just created
+        TestResponse resGet = TestResponse.request("GET", "/v1/drivers/"+testDriverID+"");
+        Map<String, String> jsonGet = resGet.json();
+        assertEquals(200, resGet.status);
+        assertEquals("Bob", jsonGet.get("firstName"));
+        assertNotNull(jsonGet.get("id"));
+
+        //patchDriver
+        String requestBodyPatch = "{" +
+                "'firstName':'Mark'" +
+                "}";
+        TestResponse resPatch = TestResponse.request("PATCH", "/v1/drivers/"+testDriverID+"",requestBodyPatch);
+        Map<String, String> jsonPatch = resPatch.json();
+        assertEquals(200, resPatch.status);
+        assertEquals("Mark", jsonPatch.get("firstName"));
+        assertNotNull(jsonPatch.get("id"));
+
+        //deleteDriver
+        TestResponse resDelete = TestResponse.request("DELETE", "/v1/drivers/"+testDriverID+"");
+        Map<String, String> jsonDelete  = resDelete .json();
+        assertEquals(200, resDelete.status);
+        assertEquals("Mark", jsonDelete .get("firstName"));
+        assertNotNull(jsonPatch.get("id"));
+
     }
-
-    @Test
-    public void getDriver() throws IOException {
-        System.out.println(IDD);
-        System.out.println(testtestID);
-        TestResponse res = TestResponse.request("GET", "/v1/drivers/"+testtestID+"");
-        Map<String, String> json = res.json();
-        assertEquals(200, res.status);
-        assertEquals("Bob", json.get("firstName"));
-        assertNotNull(json.get("id"));
-    }
-
 }
-
-//    @Test
-//    public void sessionValidate() {
-//        TestResponse res = request("POST", "/v1/sessions,);
-//        Map<String, String> json = res.json();
-//        assertEquals(200, res.status);
-//        System.out.println(json.get("token"));
-//    }
-//
-//
-
-//    @Test
-//    public void tryGET() throws IOException {
-//        TestResponse res = TestResponse.request("GET", "/v1/drivers");
-//        Map<String, String> json = res.json();
-//        assertEquals(200, res.status);
-//        assertNotNull(json.get("id"));
-//    }
-//    @Test
-//    public void tryPOST() {
-//        TestResponse res = request("POST", "/v1/drivers?firstName=zoo&lastName=pia&emailAddress=abc@xyz&password=qqq12344&addressLine1=1&addressLine2=2&city=3&state=4&zip=5&phoneNumber=6&drivingLicense=8&licensedState=10");
-//        Map<String, String> json = res.json();
-//        assertEquals(200, res.status);
-////        assertEquals("zoo", json.get("firstName"));
-////        assertEquals("john@foobar.com", json.get("email"));
-//        assertNotNull(json.get("id"));
-//    }
-//
-//    @Test
-//    public void tryPatch() {
-//        TestResponse res = request("PATCH", "/v1/drivers?id=13e52ff9-8bfc-4695-8e2e-a8722a032029&firstName=zooy");
-//        Map<String, String> json = res.json();
-//        assertEquals(200, res.status);
-//        System.out.println(json.get("firstName"));
-//        assertEquals("zoo", json.get("firstName"));
-////        assertEquals("john@foobar.com", json.get("email"));
-//        assertNotNull(json.get("id"));
-//    }
-

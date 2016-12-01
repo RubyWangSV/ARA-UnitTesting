@@ -53,9 +53,17 @@ public class TestResponse {
 
     public static TestResponse request(String method, String path, String jsonBody) {
         try {
+
             URL url = new URL("http://localhost:8080" + path);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(method);
+
+            if (method == "PATCH"){
+                connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                connection.setRequestMethod("POST");
+            }
+            else{
+                connection.setRequestMethod(method);
+            }
             connection.setDoOutput(true);
             connection.connect();
             OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
