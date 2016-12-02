@@ -24,7 +24,7 @@ public class TokenTest {
     String requestBodyX = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark57@att.com'," +
+            "'emailAddress':'mark69@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -37,7 +37,7 @@ public class TokenTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark57@att.com'," +
+            "'email':'mark69@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -46,9 +46,9 @@ public class TokenTest {
             "'model':'S'," +
             "'license':'12345'," +
             "'carType':'coupe'," +
-            "'maxPassengers':'2'," +
+            "'maxPassengers':2," +
             "'color':'White'," +
-            "'validRideTypes': [ \"ECONOMY\"]'" +
+            "'validRideTypes': [ \"ECONOMY\"]" +
             "}";
 
     @Test
@@ -69,10 +69,9 @@ public class TokenTest {
 
         token = jsonToken.get("token");
 
-        //!! token too long???
         //create a car for the driver
-//        TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
-//        Map<String, String> jsonTokenCar = resTokenCar.json();
-//        assertEquals(200, resToken.status);
+        TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
+        Map<String, String> jsonTokenCar = resTokenCar.json();
+        assertEquals(200, resToken.status);
     }
 }
