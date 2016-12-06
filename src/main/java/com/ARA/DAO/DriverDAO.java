@@ -1,5 +1,6 @@
 package com.ARA.DAO;
 
+import com.ARA.Application;
 import com.ARA.module.Car;
 import com.ARA.module.Driver;
 
@@ -23,6 +24,8 @@ import com.google.gson.JsonParser;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 import spark.Response;
+
+import static spark.Spark.halt;
 
 
 /**

@@ -16,7 +16,7 @@ import static org.junit.Assert.fail;
  * implementation of Driver Test
  * @author Edam & Ruby
  * @version 4.0.0
- * Modified from 2https://github.com/mscharhag/blog-examples/blob/master/sparkdemo/src/test/java/com/mscharhag/sparkdemo/UserControllerIntegrationTest.java
+ * Modified from https://github.com/mscharhag/blog-examples/blob/master/sparkdemo/src/test/java/com/mscharhag/sparkdemo/UserControllerIntegrationTest.java
  */
 
 public class TestResponse {
@@ -35,23 +35,25 @@ public class TestResponse {
     }
 
     public static TestResponse request(String method, String path) {
+        int connectionCode = 0;
         try {
             URL url = new URL("http://localhost:8080" + path);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
             connection.setDoOutput(true);
             connection.connect();
-
+            connectionCode = connection.getResponseCode();
             String body = IOUtils.toString(connection.getInputStream());
             return new TestResponse(connection.getResponseCode(), body);
         } catch (IOException e) {
             e.printStackTrace();
-            fail("Sending request failed: " + e.getMessage());
-            return null;
+            //fail("Sending request failed: " + e.getMessage());
+            return new TestResponse(connectionCode, "");
         }
     }
 
     public static TestResponse request(String method, String path, String jsonBody) {
+        int connectionCode = 0;
         try {
 
             URL url = new URL("http://localhost:8080" + path);
@@ -66,16 +68,18 @@ public class TestResponse {
             }
             connection.setDoOutput(true);
             connection.connect();
+
             OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
             wr.write(jsonBody);
             wr.flush();
 
             String body = IOUtils.toString(connection.getInputStream());
+            connectionCode = connection.getResponseCode();
             return new TestResponse(connection.getResponseCode(), body);
         } catch (IOException e) {
             e.printStackTrace();
-            fail("Sending request failed: " + e.getMessage());
-            return null;
+            //fail("Sending request failed: " + e.getMessage());
+            return new TestResponse(connectionCode, "");
         }
     }
 }

@@ -24,7 +24,7 @@ public class TokenTest {
     String requestBodyX = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark75@att.com'," +
+            "'emailAddress':'mark101@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -37,7 +37,7 @@ public class TokenTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark75@att.com'," +
+            "'email':'mark101@att.com'," +
             "'password':'1234567890'" +
             "}";
 

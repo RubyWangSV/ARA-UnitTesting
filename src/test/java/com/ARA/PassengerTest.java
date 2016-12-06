@@ -24,7 +24,7 @@ public class PassengerTest {
     String requestBody = "{" +
             "'firstName':'Zoe'," +
             "'lastName':'Moore'," +
-            "'emailAddress':'zoe03@att.com'," +
+            "'emailAddress':'zoe04@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'1999 Castro Street'," +
             "'addressLine2':''," +
