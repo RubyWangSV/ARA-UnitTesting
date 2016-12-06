@@ -167,8 +167,17 @@ public class Passenger {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
     public List<String> getRides() {
         return rides;
+    }
+
+    public void addRide(String rideId) {
+
+        if (rides == null)
+            this.rides = new ArrayList<>(Arrays.asList(rideId));
+        else
+            this.rides.add(rideId);
     }
 
     /** This method is used to valid the passenger data.

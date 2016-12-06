@@ -208,6 +208,14 @@ public class Driver {
         return rides;
     }
 
+    public void addRide(String rideId) {
+
+        if (rides == null)
+            this.rides = new ArrayList<>(Arrays.asList(rideId));
+        else
+            this.rides.add(rideId);
+    }
+
     /** This method is used to valid the driver data.
      * @return true - valid / false - invalid.
      */

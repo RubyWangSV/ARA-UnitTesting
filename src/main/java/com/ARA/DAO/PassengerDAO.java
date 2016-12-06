@@ -288,6 +288,8 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
         try{
             String id = request.params(":id");
 
+            Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
+
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             String rideType = jsonObject.get("rideType").toString().replaceAll("\"", "");
@@ -322,6 +324,12 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             newRide.setPassenger(id);
 
             getDs().save(newRide);
+
+            // associate new ride to current driver and passenger
+            driver.addRide(newRide.getId());
+            getDs().save(driver);
+            passenger.addRide(newRide.getId());
+            getDs().save(passenger);
             response.status(200);
             return dataToJson.d2j(newRide);
 

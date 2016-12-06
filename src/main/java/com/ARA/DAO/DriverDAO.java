@@ -384,6 +384,11 @@ public class DriverDAO extends BasicDAO<Driver, String> {
     public String createRide(Request request, Response response) throws IOException{
         try{
             String id = request.params(":id");
+            Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
+            if (driver == null) {
+                response.status(400);
+                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+            }
 
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
@@ -419,6 +424,12 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             newRide.setPassenger(passengerId);
 
             getDs().save(newRide);
+
+            // associate new ride to current driver and passenger
+            driver.addRide(newRide.getId());
+            getDs().save(driver);
+            passenger.addRide(newRide.getId());
+            getDs().save(passenger);
             response.status(200);
             return dataToJson.d2j(newRide);
 
