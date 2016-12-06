@@ -31,62 +31,62 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
     }
 
     /** This method is used to get all passengers.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return all passengers
      * @throws IOException
      */
-    public String getAllPassengers(Request req, Response res) throws IOException{
+    public String getAllPassengers(Request request, Response response) throws IOException{
          try {
 
-             Integer count = req.queryParams().contains("count") ? Integer.valueOf(req.queryParams("count")) : 2147483647;
-             Integer offsetId = req.queryParams().contains("offsetId") ? Integer.valueOf(req.queryParams("offsetId")) : 0;
-             String sortBy = req.queryParams().contains("sort") ? req.queryParams("sort") : "_id";
+             Integer count = request.queryParams().contains("count") ? Integer.valueOf(request.queryParams("count")) : 2147483647;
+             Integer offsetId = request.queryParams().contains("offsetId") ? Integer.valueOf(request.queryParams("offsetId")) : 0;
+             String sortBy = request.queryParams().contains("sort") ? request.queryParams("sort") : "_id";
 
-             if (req.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(req.queryParams("sortOrder")))
+             if (request.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(request.queryParams("sortOrder")))
                  sortBy = "-" + sortBy;
 
              List<Passenger> allPassenger = getDs().find(Passenger.class).offset(offsetId).limit(count).order(sortBy).asList();
 
-             res.status(200);
+             response.status(200);
              return dataToJson.d2j(allPassenger);
          } catch (Exception e) {
-             res.status(500);
+             response.status(500);
              return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
          }
     }
 
     /** This method is used to get a specific passenger with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The passenger specified with :id.
      * @throws IOException
      */
-    public String getPassenger(Request req, Response res) throws IOException {
+    public String getPassenger(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
             if (passenger == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1004, "Given passenger does not exist"));
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(passenger);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to create a passenger.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The passenger created.
      * @throws IOException
      */ 
-    public String createPassenger(Request req, Response res) throws IOException{
+    public String createPassenger(Request request, Response response) throws IOException{
         try{
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             String firstName = jsonObject.get("firstName").toString().replaceAll("\"", "");
             String lastName = jsonObject.get("lastName").toString().replaceAll("\"", "");
@@ -99,7 +99,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             String zip = jsonObject.get("zip").toString().replaceAll("\"", "");   
             String phoneNumber = jsonObject.get("phoneNumber").toString().replaceAll("\"", "");    
             if (password.length() > 20 || password.length() < 8) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
@@ -107,35 +107,35 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
                     || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
             }
 
             if (!newPassenger.isValidPassenger()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(newPassenger);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(newPassenger);
 
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to update a specific passenger with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The passenger specified with :id.
      * @throws IOException
      */    
-    public String updatePassenger(Request req, Response res) throws IOException {
+    public String updatePassenger(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            String id = request.params(":id");
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             Passenger passenger =  getDs().find(Passenger.class).field("id").equal(id).get();
 
@@ -153,7 +153,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
                 String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
                 if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
                         || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
-                    res.status(400);
+                    response.status(400);
                     return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
                 }
                 passenger.setEmailAddress(emailAddress);
@@ -162,7 +162,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             if (jsonObject.has("password")) {
                 String password = jsonObject.get("password").toString().replaceAll("\"", "");
                 if (password.length() > 20 || password.length() < 8) {
-                    res.status(400);
+                    response.status(400);
                     return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
                 }
                 passenger.setPassword(password);
@@ -199,56 +199,56 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             }
 
             if (!passenger.isValidPassenger()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(passenger);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(passenger);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
 
     }
 
     /** This method is used to delete a specific passenger with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The passenger with :id.
      * @throws IOException
      */ 
-    public String deletePassenger(Request req, Response res) throws IOException {
+    public String deletePassenger(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
             if (passenger == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1004, "Given passenger does not exist"));
             }
             getDs().delete(passenger);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(passenger);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
 
     /** This method is used to get the ride info of a specific passenger with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The ride info of a specific passenger with :id.
      * @throws IOException
      */ 
-    public String getRides(Request req, Response res) throws IOException {
+    public String getRides(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
             if (passenger == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1004, "Given passenger does not exist"));
             }
             List<String> rideIds = passenger.getRides();
@@ -257,16 +257,16 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
                 for (String rideId : rideIds) {
                     Ride ride = getDs().find(Ride.class).field("id").equal(rideId).get();
                     if (ride == null) {
-                        res.status(400);
+                        response.status(400);
                         return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
                     }
                     rides.add(ride);
                 }
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(rides);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }

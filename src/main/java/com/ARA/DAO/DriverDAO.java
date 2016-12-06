@@ -40,62 +40,62 @@ public class DriverDAO extends BasicDAO<Driver, String> {
     }
 
     /** This method is used to get all drivers.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return all drivers
      * @throws IOException
      */
-    public String getAllDrivers(Request req, Response res) throws IOException{
+    public String getAllDrivers(Request request, Response response) throws IOException{
         try {
 
-            Integer count = req.queryParams().contains("count") ? Integer.valueOf(req.queryParams("count")) : 2147483647;
-            Integer offsetId = req.queryParams().contains("offsetId") ? Integer.valueOf(req.queryParams("offsetId")) : 0;
-            String sortBy = req.queryParams().contains("sort") ? req.queryParams("sort") : "_id";
+            Integer count = request.queryParams().contains("count") ? Integer.valueOf(request.queryParams("count")) : 2147483647;
+            Integer offsetId = request.queryParams().contains("offsetId") ? Integer.valueOf(request.queryParams("offsetId")) : 0;
+            String sortBy = request.queryParams().contains("sort") ? request.queryParams("sort") : "_id";
 
-            if (req.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(req.queryParams("sortOrder")))
+            if (request.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(request.queryParams("sortOrder")))
                 sortBy = "-" + sortBy;
 
             List<Driver> allDriver = getDs().find(Driver.class).offset(offsetId).limit(count).order(sortBy).asList();
 
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(allDriver);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to get a specific driver with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The driver specified with :id.
      * @throws IOException
      */
-    public String getDriver(Request req, Response res) throws IOException {
+    public String getDriver(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(driver);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to create a driver.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The driver created.
      * @throws IOException
      */ 
-    public String createDriver(Request req, Response res) throws IOException{
+    public String createDriver(Request request, Response response) throws IOException{
         try{
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             String firstName = jsonObject.get("firstName").toString().replaceAll("\"", "");
             String lastName = jsonObject.get("lastName").toString().replaceAll("\"", "");
@@ -110,7 +110,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             String drivingLicense = jsonObject.get("drivingLicense").toString().replaceAll("\"", "");                    
             String licensedState = jsonObject.get("licensedState").toString().replaceAll("\"", "");
             if (password.length() > 20 || password.length() < 8) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
@@ -118,35 +118,35 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
                     || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
             }
 
             if (!newDriver.isValidDriver()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(newDriver);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(newDriver);
 
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to update a specific driver with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The driver specified with :id.
      * @throws IOException
      */    
-    public String updateDriver(Request req, Response res) throws IOException {
+    public String updateDriver(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            String id = request.params(":id");
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             Driver driver =  getDs().find(Driver.class).field("id").equal(id).get();
 
@@ -164,7 +164,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                 String emailAddress = jsonObject.get("emailAddress").toString().replaceAll("\"", "");
                 if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
                         || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
-                    res.status(400);
+                    response.status(400);
                     return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
                 }
                 driver.setEmailAddress(emailAddress);
@@ -173,7 +173,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             if (jsonObject.has("password")) {
                 String password = jsonObject.get("password").toString().replaceAll("\"", "");
                 if (password.length() > 20 || password.length() < 8) {
-                    res.status(400);
+                    response.status(400);
                     return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
                 }
                 driver.setPassword(password);
@@ -220,55 +220,55 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             }
 
             if (!driver.isValidDriver()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(driver);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(driver);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
 
     }
 
     /** This method is used to delete a specific driver with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The driver with :id.
      * @throws IOException
      */ 
-    public String deleteDriver(Request req, Response res) throws IOException {
+    public String deleteDriver(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             getDs().delete(driver);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(driver);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to get the car info of a specific driver with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The car info of a specific driver with :id.
      * @throws IOException
      */ 
-    public String getCars(Request req, Response res) throws IOException {
+    public String getCars(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             List<String> carIds = driver.getCars();
@@ -277,36 +277,36 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                 for (String carId : carIds) {
                     Car car = getDs().find(Car.class).field("id").equal(carId).get();
                     if (car == null) {
-                        res.status(400);
+                        response.status(400);
                         return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
                     }
                     cars.add(car);
                 }
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(cars);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to create cars of a specific driver with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The newe car created for a specific driver with :id.
      * @throws IOException
      */ 
-    public String createCar(Request req, Response res) throws IOException {
+    public String createCar(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             // Create a new car
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
             String make = jsonObject.get("make").toString().replaceAll("\"", "");
             String model = jsonObject.get("model").toString().replaceAll("\"", "");
             String license = jsonObject.get("license").toString().replaceAll("\"", "");
@@ -321,7 +321,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             newCar.setDrivers(id);
 
             if (!newCar.isValidCar()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
             // save to Cars
@@ -329,26 +329,26 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             // associate new car to current driver
             driver.addCar(newCar.getId());
             getDs().save(driver);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(newCar);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to get the ride info of a specific driver with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The ride info of a specific driver with :id.
      * @throws IOException
      */ 
-    public String getRides(Request req, Response res) throws IOException {
+    public String getRides(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
             }
             List<String> rideIds = driver.getRides();
@@ -357,16 +357,16 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                 for (String rideId : rideIds) {
                     Ride ride = getDs().find(Ride.class).field("id").equal(rideId).get();
                     if (ride == null) {
-                        res.status(400);
+                        response.status(400);
                         return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
                     }
                     rides.add(ride);
                 }
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(rides);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }

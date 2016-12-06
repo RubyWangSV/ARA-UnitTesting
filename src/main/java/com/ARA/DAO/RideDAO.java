@@ -40,12 +40,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to get all rides.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return all rides
      * @throws IOException
      */
-    public String getAllRides(Request req, Response res) throws IOException {
+    public String getAllRides(Request request, Response response) throws IOException {
         try {
 
             Integer count = req.queryParams().contains("count") ? Integer.valueOf(req.queryParams("count")) : 2147483647;
@@ -66,12 +66,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to get a specific ride with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The ride specified with :id.
      * @throws IOException
      */
-    public String getRide(Request req, Response res) throws IOException {
+    public String getRide(Request request, Response response) throws IOException {
         try {
             String id = req.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
@@ -88,12 +88,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to create a ride.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The ride created.
      * @throws IOException
      */
-    public String createRide(Request req, Response res) throws IOException{
+    public String createRide(Request request, Response response) throws IOException{
         try{
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
 
@@ -132,12 +132,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to update a specific ride with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The ride specified with :id.
      * @throws IOException
      */    
-    public String updateRide(Request req, Response res) throws IOException {
+    public String updateRide(Request request, Response response) throws IOException {
         try{
             String id = req.params(":id");
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
@@ -204,12 +204,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to delete a specific ride with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The ride specified with :id.
      * @throws IOException
      */
-    public String deleteRide(Request req, Response res) throws IOException {
+    public String deleteRide(Request request, Response response) throws IOException {
         try {
             String id = req.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
@@ -227,12 +227,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to add a route point of a ride.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The route point created.
      * @throws IOException
      */
-    public String addRoutePoint(Request req, Response res) throws IOException {
+    public String addRoutePoint(Request request, Response response) throws IOException {
         try {
             String id = req.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
@@ -262,12 +262,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to get all route points of a specific ride with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The route points of a specific ride with :id.
      * @throws IOException
      */
-    public String getRoutePoints(Request req, Response res) throws IOException {
+    public String getRoutePoints(Request request, Response response) throws IOException {
         try {
             String id = req.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
@@ -286,12 +286,12 @@ public class RideDAO extends BasicDAO<Ride, String> {
     }
 
     /** This method is used to get the lastest route point of a specific ride with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The lastest route point of a specific ride with :id.
      * @throws IOException
      */
-    public String getLastestRoutePoints(Request req, Response res) throws IOException {
+    public String getLastestRoutePoints(Request request, Response response) throws IOException {
         try {
             String id = req.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();

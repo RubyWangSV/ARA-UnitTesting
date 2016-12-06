@@ -34,54 +34,54 @@ public class CarDAO extends BasicDAO<Car, String> {
     }
 
     /** This method is used to get all cars.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return all cars
      * @throws IOException
      */
-    public String getAllCars(Request req, Response res) throws IOException {
+    public String getAllCars(Request request, Response response) throws IOException {
         try {
             List<Car> allCar = getDs().find(Car.class).asList();
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(allCar);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to get a specific car with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The car specified with :id.
      * @throws IOException
      */
-    public String getCar(Request req, Response res) throws IOException {
+    public String getCar(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(car);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to update a specific car with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The car specified with :id.
      * @throws IOException
      */    
-    public String updateCar(Request req, Response res) throws IOException {
+    public String updateCar(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            String id = request.params(":id");
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             Car car = getDs().find(Car.class).field("id").equal(id).get();
 
@@ -129,54 +129,54 @@ public class CarDAO extends BasicDAO<Car, String> {
                 car.setValidRideTypes(validRideTypes);
             }
             if (!car.isValidCar()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(car);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(car);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to delete a specific car with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The car specified with :id.
      * @throws IOException
      */    
-    public String deleteCar(Request req, Response res) throws IOException {
+    public String deleteCar(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
             }
             getDs().delete(car);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(car);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
 
     /** This method is used to get the driver info of a specific car with :id.
-     * @param req
-     * @param res
+     * @param request
+     * @param response
      * @return The driver info of a specific car with :id.
      * @throws IOException
      */    
-    public String getDriver(Request req, Response res) throws IOException {
+    public String getDriver(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
             }
             List<String> driverIds = car.getDrivers();
@@ -185,16 +185,16 @@ public class CarDAO extends BasicDAO<Car, String> {
                 for (String driverId : driverIds) {
                     Driver driver = getDs().find(Driver.class).field("id").equal(driverId).get();
                     if (driver == null) {
-                        res.status(400);
+                        response.status(400);
                         return dataToJson.d2j(new Error(400, 1002, "Given driver does not exist"));
                     }
                     drivers.add(driver);
                 }
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(drivers);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }

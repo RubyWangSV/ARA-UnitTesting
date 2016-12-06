@@ -59,13 +59,13 @@ public class Application {
         port(8080);
 
         // server test
-        get("/", (req, res) -> "Hello World!");
+        get("/", (request, response) -> "Hello World!");
 
         // session
-        post(versionURI + "/sessions", (req, res) -> {
+        post(versionURI + "/sessions", (request, response) -> {
             try {
 
-                JsonObject reqBody = (JsonObject) new JsonParser().parse(req.body());
+                JsonObject reqBody = (JsonObject) new JsonParser().parse(request.body());
                 String email = reqBody.get("email").toString().replaceAll("\"", "");
                 String password = reqBody.get("password").toString().replaceAll("\"", "");
                 Driver driver = driverDAO.createQuery()
@@ -85,7 +85,7 @@ public class Application {
                 boolean isPassenger = pe.validatePassword(password, passengerPassword);
 
                 if (!isDriver && !isPassenger) {
-                    res.status(400);
+                    response.status(400);
                     return dataToJson.d2j(new Error(400, 9001, "Wrong username or password"));
                 }
 
@@ -113,34 +113,34 @@ public class Application {
 
                 token token = new token(tokenString);
 
-                res.status(200);
+                response.status(200);
                 return dataToJson.d2j(token);
 
             } catch (Exception e) {
-                res.status(500);
+                response.status(500);
                 return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
             }
         });
 
         // CRUD for Cars
-        get(versionURI + "/cars", (req, res) -> carDAO.getAllCars(req, res));
-        get(versionURI + "/cars/:id", (req, res) -> carDAO.getCar(req, res));
-        patch(versionURI + "/cars/:id", (req, res) -> carDAO.updateCar(req, res));
-        delete(versionURI + "/cars/:id", (req, res) -> carDAO.deleteCar(req, res));
-        get(versionURI + "/cars/:id/drivers", (req, res) -> carDAO.getDriver(req, res));
+        get(versionURI + "/cars", (request, response) -> carDAO.getAllCars(request, response));
+        get(versionURI + "/cars/:id", (request, response) -> carDAO.getCar(request, response));
+        patch(versionURI + "/cars/:id", (request, response) -> carDAO.updateCar(request, response));
+        delete(versionURI + "/cars/:id", (request, response) -> carDAO.deleteCar(request, response));
+        get(versionURI + "/cars/:id/drivers", (request, response) -> carDAO.getDriver(request, response));
 
         // CRUD for Drivers
-        get(versionURI + "/drivers", (req, res) -> driverDAO.getAllDrivers(req, res));
-        get(versionURI + "/drivers/:id", (req, res) -> driverDAO.getDriver(req, res));
-        post(versionURI + "/drivers", (req, res) -> driverDAO.createDriver(req, res));
-        patch(versionURI + "/drivers/:id", (req, res) -> driverDAO.updateDriver(req, res));
-        delete(versionURI + "/drivers/:id", (req, res) -> driverDAO.deleteDriver(req, res));
+        get(versionURI + "/drivers", (request, response) -> driverDAO.getAllDrivers(request, response));
+        get(versionURI + "/drivers/:id", (request, response) -> driverDAO.getDriver(request, response));
+        post(versionURI + "/drivers", (request, response) -> driverDAO.createDriver(request, response));
+        patch(versionURI + "/drivers/:id", (request, response) -> driverDAO.updateDriver(request, response));
+        delete(versionURI + "/drivers/:id", (request, response) -> driverDAO.deleteDriver(request, response));
         // Get and create car info of a driver
-        get(versionURI + "/drivers/:id/cars", (req, res) -> driverDAO.getCars(req, res));
-        post(versionURI + "/drivers/:id/cars", (req, res) -> {
+        get(versionURI + "/drivers/:id/cars", (request, response) -> driverDAO.getCars(request, response));
+        post(versionURI + "/drivers/:id/cars", (request, response) -> {
             // Access control
             // Only driver can create new cars
-            String jwt = req.queryParams("token");
+            String jwt = request.queryParams("token");
             if (jwt == null) {
                 return dataToJson.d2j(new Error(401, 9003, "No token provided"));
             }
@@ -154,22 +154,22 @@ public class Application {
                     return dataToJson.d2j(new Error(401, 9004, "Token expired"));
                 }
                 String id = claims.getSubject();
-                String givenId = req.params(":id");
+                String givenId = request.params(":id");
                 if (!id.equals(givenId)) {
                     return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
                 }
-                return driverDAO.createCar(req, res);
+                return driverDAO.createCar(request, response);
             } catch (Exception e) {
                 return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
             }
         });
 
         // Get ride info of a driver
-        get(versionURI + "/drivers/:id/rides", (req, res) -> driverDAO.getRides(req, res));
-        post(versionURI + "/drivers/:id/rides", (req, res) -> {
+        get(versionURI + "/drivers/:id/rides", (request, response) -> driverDAO.getRides(request, response));
+        post(versionURI + "/drivers/:id/rides", (request, response) -> {
             // Access control
             // Only driver can create new cars
-            String jwt = req.queryParams("token");
+            String jwt = request.queryParams("token");
             if (jwt == null) {
                 return dataToJson.d2j(new Error(401, 9003, "No token provided"));
             }
@@ -183,28 +183,28 @@ public class Application {
                     return dataToJson.d2j(new Error(401, 9004, "Token expired"));
                 }
                 String id = claims.getSubject();
-                String givenId = req.params(":id");
+                String givenId = request.params(":id");
                 if (!id.equals(givenId)) {
                     return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
                 }
-                return rideDAO.createRide(req, res);
+                return rideDAO.createRide(request, response);
             } catch (Exception e) {
                 return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
             }
         });
 
         // CRUD for Passengers
-        get(versionURI + "/passengers", (req, res) -> passengerDAO.getAllPassengers(req, res));
-        get(versionURI + "/passengers/:id", (req, res) -> passengerDAO.getPassenger(req, res));
-        post(versionURI + "/passengers", (req, res) -> passengerDAO.createPassenger(req, res));
-        patch(versionURI + "/passengers/:id", (req, res) -> passengerDAO.updatePassenger(req, res));
-        delete(versionURI + "/passengers/:id", (req, res) -> passengerDAO.deletePassenger(req, res));
+        get(versionURI + "/passengers", (request, response) -> passengerDAO.getAllPassengers(request, response));
+        get(versionURI + "/passengers/:id", (request, response) -> passengerDAO.getPassenger(request, response));
+        post(versionURI + "/passengers", (request, response) -> passengerDAO.createPassenger(request, response));
+        patch(versionURI + "/passengers/:id", (request, response) -> passengerDAO.updatePassenger(request, response));
+        delete(versionURI + "/passengers/:id", (request, response) -> passengerDAO.deletePassenger(request, response));
         // Get ride info of a driver
-        get(versionURI + "/passengers/:id/rides", (req, res) -> passengerDAO.getRides(req, res));
-        post(versionURI + "/passengers/:id/rides", (req, res) -> {
+        get(versionURI + "/passengers/:id/rides", (request, response) -> passengerDAO.getRides(request, response));
+        post(versionURI + "/passengers/:id/rides", (request, response) -> {
             // Access control
             // Only driver can create new cars
-            String jwt = req.queryParams("token");
+            String jwt = request.queryParams("token");
             if (jwt == null) {
                 return dataToJson.d2j(new Error(401, 9003, "No token provided"));
             }
@@ -218,11 +218,11 @@ public class Application {
                     return dataToJson.d2j(new Error(401, 9004, "Token expired"));
                 }
                 String id = claims.getSubject();
-                String givenId = req.params(":id");
+                String givenId = request.params(":id");
                 if (!id.equals(givenId)) {
                     return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
                 }
-                return rideDAO.createRide(req, res);
+                return rideDAO.createRide(request, response);
             } catch (Exception e) {
                 return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
             }
@@ -230,13 +230,13 @@ public class Application {
 
 
         // CRUD for Rides
-        get(versionURI + "/rides", (req, res) -> rideDAO.getAllRides(req, res));
-        get(versionURI + "/rides/:id", (req, res) -> rideDAO.getRide(req, res));
-        patch(versionURI + "/rides/:id", (req, res) -> rideDAO.updateRide(req, res));
-        delete(versionURI + "/rides/:id", (req, res) -> rideDAO.deleteRide(req, res));
-        post(versionURI + "/rides/:id/routePoints", (req, res) -> rideDAO.addRoutePoint(req, res));
-        get(versionURI + "/rides/:id/routePoints", (req, res) -> rideDAO.getRoutePoints(req, res));
-        get(versionURI + "/rides/:id/routePoints/latest", (req, res) -> rideDAO.getLastestRoutePoints(req, res));
+        get(versionURI + "/rides", (request, response) -> rideDAO.getAllRides(request, response));
+        get(versionURI + "/rides/:id", (request, response) -> rideDAO.getRide(request, response));
+        patch(versionURI + "/rides/:id", (request, response) -> rideDAO.updateRide(request, response));
+        delete(versionURI + "/rides/:id", (request, response) -> rideDAO.deleteRide(request, response));
+        post(versionURI + "/rides/:id/routePoints", (request, response) -> rideDAO.addRoutePoint(request, response));
+        get(versionURI + "/rides/:id/routePoints", (request, response) -> rideDAO.getRoutePoints(request, response));
+        get(versionURI + "/rides/:id/routePoints/latest", (request, response) -> rideDAO.getLastestRoutePoints(request, response));
     }
 
 }
