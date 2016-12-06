@@ -73,8 +73,8 @@ public class TestResponse {
             wr.write(jsonBody);
             wr.flush();
 
-            String body = IOUtils.toString(connection.getInputStream());
             connectionCode = connection.getResponseCode();
+            String body = IOUtils.toString(connection.getInputStream());
             return new TestResponse(connection.getResponseCode(), body);
         } catch (IOException e) {
             e.printStackTrace();

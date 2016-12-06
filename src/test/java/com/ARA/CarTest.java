@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class CarTest {
     String testCarID;
-    String testCarNGID = "xxxID";
+    String testCarNGID;
     String testDriverXID;
     String token;
 
@@ -33,13 +33,13 @@ public class CarTest {
             "'carType':'sedan'," +
             "'maxPassengers':10," +
             "'color':'White'," +
-            "'validRideTypes':  [ \"ECONOMY\", \"PREMIUM\", \"EXECUTIVE\" ]" +
+            "'validRideTypes':  [ \"EXECUTIVE\" ]" +
             "}";
 
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark103@att.com'," +
+            "'emailAddress':'mark119@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -52,7 +52,7 @@ public class CarTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark103@att.com'," +
+            "'email':'mark119@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -64,6 +64,15 @@ public class CarTest {
         Map<String, String> jsonPostX = resPostX.json();
         assertEquals(200, resPostX.status);
         assertEquals("Mark", jsonPostX.get("firstName"));
+        assertEquals("Azi", jsonPostX.get("lastName"));
+        assertEquals("120 El, CA", jsonPostX.get("addressLine1"));
+        assertEquals("", jsonPostX.get("addressLine2"));
+        assertEquals("MV", jsonPostX.get("city"));
+        assertEquals("CA", jsonPostX.get("state"));
+        assertEquals("99900", jsonPostX.get("zip"));
+        assertEquals("333-999-0000", jsonPostX.get("phoneNumber"));
+        assertEquals("X7890", jsonPostX.get("drivingLicense"));
+        assertEquals("CA", jsonPostX.get("licensedState"));
         assertNotNull(jsonPostX.get("id"));
         testDriverXID = jsonPostX.get("id");
 
@@ -71,6 +80,7 @@ public class CarTest {
         TestResponse resToken = TestResponse.request("POST", "/v1/sessions", requestBodyToken);
         Map<String, String> jsonToken = resToken.json();
         assertEquals(200, resToken.status);
+        assertNotNull(jsonToken.get("token"));
 
         token = jsonToken.get("token");
 
@@ -78,6 +88,12 @@ public class CarTest {
         TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
         Map<String, String> jsonTokenCar = resTokenCar.json();
         assertEquals(200, resTokenCar.status);
+        assertEquals("Tesla", jsonTokenCar.get("make"));
+        assertEquals("S", jsonTokenCar.get("model"));
+        assertEquals("12345", jsonTokenCar.get("license"));
+        assertEquals("sedan", jsonTokenCar.get("carType"));
+        assertEquals("White", jsonTokenCar.get("color"));
+        assertNotNull(jsonTokenCar.get("id"));
 
         testCarID = jsonTokenCar.get("id");
 
@@ -85,13 +101,11 @@ public class CarTest {
         TestResponse resGet = TestResponse.request("GET", "/v1/cars/"+testCarID+"");
         Map<String, String> jsonGet = resGet.json();
         assertEquals(200, resGet.status);
-//        assertEquals("Tesla", jsonGet.get("make"));
-//        assertEquals("S", jsonGet.get("model"));
-//        assertEquals("12345", jsonGet.get("license"));
-//        assertEquals("sedan", jsonGet.get("carType"));
-//        assertEquals(10, jsonGet.get("maxPassengers"));
-//        assertEquals("White", jsonGet.get("color"));
-//        assertEquals(["ECONOMY", "PREMIUM", "EXECUTIVE"], jsonGet.get("validRideTypes"));
+        assertEquals("Tesla", jsonGet.get("make"));
+        assertEquals("S", jsonGet.get("model"));
+        assertEquals("12345", jsonGet.get("license"));
+        assertEquals("sedan", jsonGet.get("carType"));
+        assertEquals("White", jsonGet.get("color"));
         assertNotNull(jsonGet.get("id"));
 
         //patchCar
@@ -102,6 +116,10 @@ public class CarTest {
         Map<String, String> jsonPatch = resPatch.json();
         assertEquals(200, resPatch.status);
         assertEquals("Honda", jsonPatch.get("make"));
+        assertEquals("S", jsonGet.get("model"));
+        assertEquals("12345", jsonGet.get("license"));
+        assertEquals("sedan", jsonGet.get("carType"));
+        assertEquals("White", jsonGet.get("color"));
         assertNotNull(jsonPatch.get("id"));
 
         //patchCar - Change back to Tesla
@@ -112,6 +130,10 @@ public class CarTest {
         Map<String, String> jsonPatch2 = resPatch2.json();
         assertEquals(200, resPatch2.status);
         assertEquals("Tesla", jsonPatch2.get("make"));
+        assertEquals("S", jsonGet.get("model"));
+        assertEquals("12345", jsonGet.get("license"));
+        assertEquals("sedan", jsonGet.get("carType"));
+        assertEquals("White", jsonGet.get("color"));
         assertNotNull(jsonPatch2.get("id"));
 
         //deleteCar
@@ -119,14 +141,45 @@ public class CarTest {
         Map<String, String> jsonDelete  = resDelete .json();
         assertEquals(200, resDelete.status);
         assertEquals("Tesla", jsonDelete.get("make"));
+        assertEquals("S", jsonGet.get("model"));
+        assertEquals("12345", jsonGet.get("license"));
+        assertEquals("sedan", jsonGet.get("carType"));
+        assertEquals("White", jsonGet.get("color"));
         assertNotNull(jsonPatch.get("id"));
 
-        //should not delete car
-        TestResponse resDeleteNG = TestResponse.request("DELETE", "/v1/cars/"+testCarNGID+"");
-        assertEquals(400, resDeleteNG.status);
+        testCarNGID = jsonPatch.get("id");
 
-        //should not get car
+
+
+        //should not get deleted car
         TestResponse resGetNG = TestResponse.request("GET", "/v1/cars/"+testCarNGID+"");
         assertEquals(400, resGetNG.status);
+
+        //should not create missing make
+        String requestBodyCreateMissingMake = "{" +
+                "'model':'S'," +
+                "'license':'12345'," +
+                "'carType':'sedan'," +
+                "'maxPassengers':10," +
+                "'color':'White'," +
+                "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+                "}";
+        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+"token", requestBodyCreateMissingMake);
+        assertEquals(500, resCreateMissingMake.status);
+
+        //should not create car with long make
+        String requestBodyCreateLongMake = "{" +
+                "'make':'TeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMW'," +
+                "'model':'S'," +
+                "'license':'12345'," +
+                "'carType':'sedan'," +
+                "'maxPassengers':10," +
+                "'color':'White'," +
+                "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+                "}";
+        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+"token", requestBodyCreateLongMake);
+        assertEquals(400, resCreateLongMake.status);
+
+
     }
 }
