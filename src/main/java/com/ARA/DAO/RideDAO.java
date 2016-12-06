@@ -87,50 +87,6 @@ public class RideDAO extends BasicDAO<Ride, String> {
         }
     }
 
-    /** This method is used to create a ride.
-     * @param request
-     * @param response
-     * @return The ride created.
-     * @throws IOException
-     */
-    public String createRide(Request request, Response response) throws IOException{
-        try{
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
-
-            String rideType = jsonObject.get("rideType").toString().replaceAll("\"", "");
-
-            Type listType = new TypeToken<ArrayList<Double>>(){}.getType();
-            List<Double> startPoint = new Gson().fromJson(jsonObject.get("startPoint").getAsJsonArray(), listType);
-
-            List<Double> endPoint = new Gson().fromJson(jsonObject.get("endPoint").getAsJsonArray(), listType);
-
-            LocalDateTime requestTime = LocalDateTime.parse(jsonObject.get("requestTime").toString().replaceAll("\"", ""), formatter);
-
-            LocalDateTime pickupTime = LocalDateTime.parse(jsonObject.get("pickupTime").toString().replaceAll("\"", ""), formatter);
-
-            LocalDateTime dropOffTime = LocalDateTime.parse(jsonObject.get("dropOffTime").toString().replaceAll("\"", ""), formatter);
-
-            String status = jsonObject.get("status").toString().replaceAll("\"", "");
-
-            Double fare = Double.parseDouble(jsonObject.get("fare").toString().replaceAll("\"", ""));
-
-            Ride newRide = new Ride(rideType, startPoint, endPoint, requestTime.format(formatter), pickupTime.format(formatter), dropOffTime.format(formatter), status, fare);
-
-            if (!newRide.isValidRide()) {
-                response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
-            }
-
-            getDs().save(newRide);
-            response.status(200);
-            return dataToJson.d2j(newRide);
-
-        } catch (Exception e) {
-            response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
-        }
-    }
-
     /** This method is used to update a specific ride with :id.
      * @param request
      * @param response

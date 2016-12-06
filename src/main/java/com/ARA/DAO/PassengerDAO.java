@@ -7,9 +7,14 @@ import com.ARA.module.Ride;
 import com.ARA.util.Error;
 import com.ARA.util.dataToJson;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import spark.Request;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import com.google.gson.JsonObject;
@@ -25,6 +30,8 @@ import spark.Response;
  * @version 2.0.0
  */
 public class PassengerDAO extends BasicDAO<Passenger, String> {
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public PassengerDAO(Class<Passenger> entityClass, Datastore ds) {
         super(entityClass, ds);
@@ -265,6 +272,59 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             }
             response.status(200);
             return dataToJson.d2j(rides);
+        } catch (Exception e) {
+            response.status(500);
+            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+        }
+    }
+
+    /** This method is used to create a ride and attach it to current passenger.
+     * @param request
+     * @param response
+     * @return The ride created.
+     * @throws IOException
+     */
+    public String createRide(Request request, Response response) throws IOException{
+        try{
+            String id = request.params(":id");
+
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
+
+            String rideType = jsonObject.get("rideType").toString().replaceAll("\"", "");
+
+            Type listType = new TypeToken<ArrayList<Double>>(){}.getType();
+            List<Double> startPoint = new Gson().fromJson(jsonObject.get("startPoint").getAsJsonArray(), listType);
+
+            List<Double> endPoint = new Gson().fromJson(jsonObject.get("endPoint").getAsJsonArray(), listType);
+
+            LocalDateTime requestTime = LocalDateTime.parse(jsonObject.get("requestTime").toString().replaceAll("\"", ""), formatter);
+
+            LocalDateTime pickupTime = LocalDateTime.parse(jsonObject.get("pickupTime").toString().replaceAll("\"", ""), formatter);
+
+            LocalDateTime dropOffTime = LocalDateTime.parse(jsonObject.get("dropOffTime").toString().replaceAll("\"", ""), formatter);
+
+            String status = jsonObject.get("status").toString().replaceAll("\"", "");
+
+            Double fare = Double.parseDouble(jsonObject.get("fare").toString().replaceAll("\"", ""));
+
+            Ride newRide = new Ride(rideType, startPoint, endPoint, requestTime.format(formatter), pickupTime.format(formatter), dropOffTime.format(formatter), status, fare);
+
+            String driverId = jsonObject.get("driver").toString().replaceAll("\"", "");
+
+            Driver driver = getDs().find(Driver.class).field("id").equal(driverId).get();
+
+            if (!newRide.isValidRide() || driver == null) {
+                response.status(400);
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+            }
+
+            newRide.setDriver(driverId);
+            newRide.setPassenger(id);
+
+            getDs().save(newRide);
+            response.status(200);
+            return dataToJson.d2j(newRide);
+
         } catch (Exception e) {
             response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));

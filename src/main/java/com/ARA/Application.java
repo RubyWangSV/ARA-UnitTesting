@@ -187,7 +187,7 @@ public class Application {
                 if (!id.equals(givenId)) {
                     return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
                 }
-                return rideDAO.createRide(request, response);
+                return driverDAO.createRide(request, response);
             } catch (Exception e) {
                 return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
             }
@@ -222,7 +222,7 @@ public class Application {
                 if (!id.equals(givenId)) {
                     return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
                 }
-                return rideDAO.createRide(request, response);
+                return passengerDAO.createRide(request, response);
             } catch (Exception e) {
                 return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
             }
