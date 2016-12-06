@@ -11,16 +11,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * implementation of Car Test - CRUD
+ * implementation of Car Test - CRUD & Token Test (create a car with token verified)
  * @author Edam & Ruby
  * @version 4.0.0
- * @Note: Need to change the carID every time for now --> use token
+ * @Note: Change required every test run -
+ *        1. "emailAddress" in requestBodyX
+ *        2. "email" in requestBodyToken (email & password need to match requestBodyX)
  */
 
+
 public class CarTest {
-    String testCarID = "4493abfe-7799-4d4d-a02e-9612f591cd09";
+    String testCarID;
     String testCarNGID = "xxxID";
-    String requestBody = "{" +
+    String testDriverXID;
+    String token;
+
+    String requestBodyCar = "{" +
             "'make':'Tesla'," +
             "'model':'S'," +
             "'license':'12345'," +
@@ -29,12 +35,51 @@ public class CarTest {
             "'color':'White'," +
             "'validRideTypes':  [ \"ECONOMY\", \"PREMIUM\", \"EXECUTIVE\" ]" +
             "}";
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
+
+    String requestBodyDriver = "{" +
+            "'firstName':'Mark'," +
+            "'lastName':'Azi'," +
+            "'emailAddress':'mark103@att.com'," +
+            "'password':'1234567890'," +
+            "'addressLine1':'120 El, CA'," +
+            "'addressLine2':''," +
+            "'city':'MV'," +
+            "'state':'CA'," +
+            "'zip':'99900'," +
+            "'phoneNumber':'333-999-0000'," +
+            "'drivingLicense':'X7890'," +
+            "'licensedState':'CA'" +
+            "}";
+
+    String requestBodyToken = "{" +
+            "'email':'mark103@att.com'," +
+            "'password':'1234567890'" +
+            "}";
 
     @Test
     public void Car() throws IOException {
-        //Please see token test for createCar
+
+        //create a driver for token use
+        TestResponse resPostX = TestResponse.request("POST", "/v1/drivers", requestBodyDriver);
+        Map<String, String> jsonPostX = resPostX.json();
+        assertEquals(200, resPostX.status);
+        assertEquals("Mark", jsonPostX.get("firstName"));
+        assertNotNull(jsonPostX.get("id"));
+        testDriverXID = jsonPostX.get("id");
+
+        //get token for the driver
+        TestResponse resToken = TestResponse.request("POST", "/v1/sessions", requestBodyToken);
+        Map<String, String> jsonToken = resToken.json();
+        assertEquals(200, resToken.status);
+
+        token = jsonToken.get("token");
+
+        //create a car for the driver
+        TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
+        Map<String, String> jsonTokenCar = resTokenCar.json();
+        assertEquals(200, resTokenCar.status);
+
+        testCarID = jsonTokenCar.get("id");
 
         //getCar just created
         TestResponse resGet = TestResponse.request("GET", "/v1/cars/"+testCarID+"");
