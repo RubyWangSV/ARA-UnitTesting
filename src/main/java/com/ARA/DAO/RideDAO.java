@@ -48,19 +48,19 @@ public class RideDAO extends BasicDAO<Ride, String> {
     public String getAllRides(Request request, Response response) throws IOException {
         try {
 
-            Integer count = req.queryParams().contains("count") ? Integer.valueOf(req.queryParams("count")) : 2147483647;
-            Integer offsetId = req.queryParams().contains("offsetId") ? Integer.valueOf(req.queryParams("offsetId")) : 0;
-            String sortBy = req.queryParams().contains("sort") ? req.queryParams("sort") : "_id";
+            Integer count = request.queryParams().contains("count") ? Integer.valueOf(request.queryParams("count")) : 2147483647;
+            Integer offsetId = request.queryParams().contains("offsetId") ? Integer.valueOf(request.queryParams("offsetId")) : 0;
+            String sortBy = request.queryParams().contains("sort") ? request.queryParams("sort") : "_id";
 
-            if (req.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(req.queryParams("sortOrder")))
+            if (request.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(request.queryParams("sortOrder")))
                 sortBy = "-" + sortBy;
 
             List<Ride> allRide = getDs().find(Ride.class).offset(offsetId).limit(count).order(sortBy).asList();
 
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(allRide);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -73,16 +73,16 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */
     public String getRide(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
             }
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(ride);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -95,7 +95,7 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */
     public String createRide(Request request, Response response) throws IOException{
         try{
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             String rideType = jsonObject.get("rideType").toString().replaceAll("\"", "");
 
@@ -117,16 +117,16 @@ public class RideDAO extends BasicDAO<Ride, String> {
             Ride newRide = new Ride(rideType, startPoint, endPoint, requestTime.format(formatter), pickupTime.format(formatter), dropOffTime.format(formatter), status, fare);
 
             if (!newRide.isValidRide()) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(newRide);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(newRide);
 
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -139,8 +139,8 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */    
     public String updateRide(Request request, Response response) throws IOException {
         try{
-            String id = req.params(":id");
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            String id = request.params(":id");
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
 
             Ride ride =  getDs().find(Ride.class).field("id").equal(id).get();
 
@@ -194,11 +194,11 @@ public class RideDAO extends BasicDAO<Ride, String> {
                 ride.setFare(fare);
             }
             getDs().save(ride);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(ride);
 
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -211,17 +211,17 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */
     public String deleteRide(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
             }
             getDs().delete(ride);
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(ride);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -234,13 +234,13 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */
     public String addRoutePoint(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
             }
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(req.body());
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
             if (jsonObject.has("timestamp") && jsonObject.has("latitude") && jsonObject.has("longitude")) {
                 Long timestamp = Long.valueOf(jsonObject.get("timestamp").toString());
                 Double latitude = Double.valueOf(jsonObject.get("latitude").toString());
@@ -249,14 +249,14 @@ public class RideDAO extends BasicDAO<Ride, String> {
                 getDs().save(newRoutePoint);
                 ride.addRoutePoints(newRoutePoint);
                 getDs().save(ride);
-                res.status(200);
+                response.status(200);
                 return dataToJson.d2j(newRoutePoint);
             } else {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
             }
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -269,18 +269,18 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */
     public String getRoutePoints(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
             }
             List<routePoint> routePoints = ride.getRoutePoints();
             Collections.sort(routePoints, Comparator.comparing(routePoint::getTimestamp));
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(routePoints);
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }
@@ -293,18 +293,18 @@ public class RideDAO extends BasicDAO<Ride, String> {
      */
     public String getLastestRoutePoints(Request request, Response response) throws IOException {
         try {
-            String id = req.params(":id");
+            String id = request.params(":id");
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
-                res.status(400);
+                response.status(400);
                 return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
             }
             List<routePoint> routePoints = ride.getRoutePoints();
             Collections.sort(routePoints, Comparator.comparing(routePoint::getTimestamp));
-            res.status(200);
+            response.status(200);
             return dataToJson.d2j(routePoints.get(routePoints.size() - 1));
         } catch (Exception e) {
-            res.status(500);
+            response.status(500);
             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
         }
     }

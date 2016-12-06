@@ -237,6 +237,7 @@ public class Application {
         post(versionURI + "/rides/:id/routePoints", (request, response) -> rideDAO.addRoutePoint(request, response));
         get(versionURI + "/rides/:id/routePoints", (request, response) -> rideDAO.getRoutePoints(request, response));
         get(versionURI + "/rides/:id/routePoints/latest", (request, response) -> rideDAO.getLastestRoutePoints(request, response));
+
     }
 
 }
