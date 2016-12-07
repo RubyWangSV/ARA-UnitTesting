@@ -95,6 +95,8 @@ public class CarTest {
         assertEquals("12345", jsonTokenCar.get("license"));
         assertEquals("sedan", jsonTokenCar.get("carType"));
         assertEquals("White", jsonTokenCar.get("color"));
+        assertEquals(Double.valueOf(10), jsonTokenCar.get("maxPassengers"));
+        assertEquals(Arrays.asList("EXECUTIVE"), jsonTokenCar.get("validRideTypes"));
         assertNotNull(jsonTokenCar.get("id"));
 
         testCarID = jsonTokenCar.get("id");
@@ -120,10 +122,12 @@ public class CarTest {
         Map<String, String> jsonPatch = resPatch.json();
         assertEquals(200, resPatch.status);
         assertEquals("Honda", jsonPatch.get("make"));
-        assertEquals("S", jsonGet.get("model"));
-        assertEquals("12345", jsonGet.get("license"));
-        assertEquals("sedan", jsonGet.get("carType"));
-        assertEquals("White", jsonGet.get("color"));
+        assertEquals("S", jsonPatch.get("model"));
+        assertEquals("12345", jsonPatch.get("license"));
+        assertEquals("sedan", jsonPatch.get("carType"));
+        assertEquals("White", jsonPatch.get("color"));
+        assertEquals(Double.valueOf(10), jsonPatch.get("maxPassengers"));
+        assertEquals(Arrays.asList("EXECUTIVE"), jsonPatch.get("validRideTypes"));
         assertNotNull(jsonPatch.get("id"));
 
         //patchCar - Change back to Tesla
@@ -134,10 +138,12 @@ public class CarTest {
         Map<String, String> jsonPatch2 = resPatch2.json();
         assertEquals(200, resPatch2.status);
         assertEquals("Tesla", jsonPatch2.get("make"));
-        assertEquals("S", jsonGet.get("model"));
-        assertEquals("12345", jsonGet.get("license"));
-        assertEquals("sedan", jsonGet.get("carType"));
-        assertEquals("White", jsonGet.get("color"));
+        assertEquals("S", jsonPatch2.get("model"));
+        assertEquals("12345", jsonPatch2.get("license"));
+        assertEquals("sedan", jsonPatch2.get("carType"));
+        assertEquals("White", jsonPatch2.get("color"));
+        assertEquals(Double.valueOf(10), jsonPatch2.get("maxPassengers"));
+        assertEquals(Arrays.asList("EXECUTIVE"), jsonPatch2.get("validRideTypes"));
         assertNotNull(jsonPatch2.get("id"));
 
         //deleteCar
@@ -145,14 +151,15 @@ public class CarTest {
         Map<String, String> jsonDelete  = resDelete .json();
         assertEquals(200, resDelete.status);
         assertEquals("Tesla", jsonDelete.get("make"));
-        assertEquals("S", jsonGet.get("model"));
-        assertEquals("12345", jsonGet.get("license"));
-        assertEquals("sedan", jsonGet.get("carType"));
-        assertEquals("White", jsonGet.get("color"));
+        assertEquals("S", jsonDelete.get("model"));
+        assertEquals("12345", jsonDelete.get("license"));
+        assertEquals("sedan", jsonDelete.get("carType"));
+        assertEquals("White", jsonDelete.get("color"));
+        assertEquals(Double.valueOf(10), jsonPatch2.get("maxPassengers"));
+        assertEquals(Arrays.asList("EXECUTIVE"), jsonPatch2.get("validRideTypes"));
         assertNotNull(jsonPatch.get("id"));
 
         testCarNGID = jsonPatch.get("id");
-
 
 
         //should not get deleted car

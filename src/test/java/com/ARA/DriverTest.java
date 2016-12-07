@@ -21,6 +21,7 @@ import java.util.Map;
 public class DriverTest {
 
     String testDriverID;
+    String testDriverNGID
     String requestBody = "{" +
             "'firstName':'Bob'," +
             "'lastName':'Azi'," +
@@ -108,6 +109,38 @@ public class DriverTest {
         assertEquals("X7890", jsonPost.get("drivingLicense"));
         assertEquals("CA", jsonPost.get("licensedState"));
         assertNotNull(jsonPatch.get("id"));
+
+        testDriverNGID = jsonPatch.get("id")
+
+        //should not get deleted driver
+        TestResponse resGetNG = TestResponse.request("GET", "/v1/drivers/"+testDriverNGID+"");
+        assertEquals(400, resGetNG.status);
+
+        //should not create missing make
+        String requestBodyCreateMissingMake = "{" +
+                "'model':'S'," +
+                "'license':'12345'," +
+                "'driverType':'sedan'," +
+                "'maxPassengers':10," +
+                "'color':'White'," +
+                "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+                "}";
+        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/drivers?token="+"token", requestBodyCreateMissingMake);
+        assertEquals(500, resCreateMissingMake.status);
+
+        //should not create driver with long make
+        String requestBodyCreateLongMake = "{" +
+                "'make':'TeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMW'," +
+                "'model':'S'," +
+                "'license':'12345'," +
+                "'driverType':'sedan'," +
+                "'maxPassengers':10," +
+                "'color':'White'," +
+                "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+                "}";
+        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/drivers?token="+"token", requestBodyCreateLongMake);
+        assertEquals(400, resCreateLongMake.status);
+
 
     }
 }
