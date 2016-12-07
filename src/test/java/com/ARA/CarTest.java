@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -39,7 +41,7 @@ public class CarTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark121@att.com'," +
+            "'emailAddress':'mark129@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -52,7 +54,7 @@ public class CarTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark121@att.com'," +
+            "'email':'mark129@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -106,6 +108,8 @@ public class CarTest {
         assertEquals("12345", jsonGet.get("license"));
         assertEquals("sedan", jsonGet.get("carType"));
         assertEquals("White", jsonGet.get("color"));
+        assertEquals(Double.valueOf(10), jsonGet.get("maxPassengers"));
+        assertEquals(Arrays.asList("EXECUTIVE"), jsonGet.get("validRideTypes"));
         assertNotNull(jsonGet.get("id"));
 
         //patchCar
