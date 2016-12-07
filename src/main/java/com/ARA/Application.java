@@ -137,11 +137,11 @@ public class Application {
         delete(versionURI + "/drivers/:id", (request, response) -> driverDAO.deleteDriver(request, response));
         // Get and create car info of a driver
         get(versionURI + "/drivers/:id/cars", (request, response) -> driverDAO.getCars(request, response));
-        post(versionURI + "/drivers/:id/cars", (request, response) -> return driverDAO.createCar(request, response));
+        post(versionURI + "/drivers/:id/cars", (request, response) -> driverDAO.createCar(request, response));
 
         // Get ride info of a driver
         get(versionURI + "/drivers/:id/rides", (request, response) -> driverDAO.getRides(request, response));
-        post(versionURI + "/drivers/:id/rides", (request, response) -> return driverDAO.createRide(request, response));
+        post(versionURI + "/drivers/:id/rides", (request, response) -> driverDAO.createRide(request, response));
 
         // CRUD for Passengers
         get(versionURI + "/passengers", (request, response) -> passengerDAO.getAllPassengers(request, response));
@@ -151,7 +151,7 @@ public class Application {
         delete(versionURI + "/passengers/:id", (request, response) -> passengerDAO.deletePassenger(request, response));
         // Get ride info of a driver
         get(versionURI + "/passengers/:id/rides", (request, response) -> passengerDAO.getRides(request, response));
-        post(versionURI + "/passengers/:id/rides", (request, response) -> return passengerDAO.createRide(request, response));
+        post(versionURI + "/passengers/:id/rides", (request, response) -> passengerDAO.createRide(request, response));
 
 
         // CRUD for Rides
