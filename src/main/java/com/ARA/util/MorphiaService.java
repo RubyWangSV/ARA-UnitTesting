@@ -25,8 +25,8 @@ public class MorphiaService {
 
         // connect to mlab
         Morphia morphia = new Morphia();
-        ServerAddress addr = new ServerAddress("ds019886.mlab.com", 19886);
-        // ServerAddress addr = new ServerAddress("127.0.0.1"", 27017);
+        // ServerAddress addr = new ServerAddress("ds019886.mlab.com", 19886);
+        ServerAddress addr = new ServerAddress("127.0.0.1", 27017);
         List<MongoCredential> credentialsList = new ArrayList<MongoCredential>();
         MongoCredential credentia = MongoCredential.createCredential(
                 "sumomoshinqi", "cmu_app", "thunderbird".toCharArray());
