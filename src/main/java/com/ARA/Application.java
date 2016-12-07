@@ -137,61 +137,11 @@ public class Application {
         delete(versionURI + "/drivers/:id", (request, response) -> driverDAO.deleteDriver(request, response));
         // Get and create car info of a driver
         get(versionURI + "/drivers/:id/cars", (request, response) -> driverDAO.getCars(request, response));
-        post(versionURI + "/drivers/:id/cars", (request, response) -> {
-            // Access control
-            // Only driver can create new cars
-            String jwt = request.queryParams("token");
-            if (jwt == null) {
-                return dataToJson.d2j(new Error(401, 9003, "No token provided"));
-            }
-            try {
-                Claims claims = Jwts.parser()
-                        .setSigningKey(Application.key)
-                        .parseClaimsJws(jwt).getBody();
-                long nowMillis = System.currentTimeMillis();
-                Date now = new Date(nowMillis);
-                if (claims.getExpiration().before(now)) {
-                    return dataToJson.d2j(new Error(401, 9004, "Token expired"));
-                }
-                String id = claims.getSubject();
-                String givenId = request.params(":id");
-                if (!id.equals(givenId)) {
-                    return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-                }
-                return driverDAO.createCar(request, response);
-            } catch (Exception e) {
-                return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-            }
-        });
+        post(versionURI + "/drivers/:id/cars", (request, response) -> return driverDAO.createCar(request, response));
 
         // Get ride info of a driver
         get(versionURI + "/drivers/:id/rides", (request, response) -> driverDAO.getRides(request, response));
-        post(versionURI + "/drivers/:id/rides", (request, response) -> {
-            // Access control
-            // Only driver can create new cars
-            String jwt = request.queryParams("token");
-            if (jwt == null) {
-                return dataToJson.d2j(new Error(401, 9003, "No token provided"));
-            }
-            try {
-                Claims claims = Jwts.parser()
-                        .setSigningKey(Application.key)
-                        .parseClaimsJws(jwt).getBody();
-                long nowMillis = System.currentTimeMillis();
-                Date now = new Date(nowMillis);
-                if (claims.getExpiration().before(now)) {
-                    return dataToJson.d2j(new Error(401, 9004, "Token expired"));
-                }
-                String id = claims.getSubject();
-                String givenId = request.params(":id");
-                if (!id.equals(givenId)) {
-                    return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-                }
-                return driverDAO.createRide(request, response);
-            } catch (Exception e) {
-                return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-            }
-        });
+        post(versionURI + "/drivers/:id/rides", (request, response) -> return driverDAO.createRide(request, response));
 
         // CRUD for Passengers
         get(versionURI + "/passengers", (request, response) -> passengerDAO.getAllPassengers(request, response));
@@ -201,32 +151,7 @@ public class Application {
         delete(versionURI + "/passengers/:id", (request, response) -> passengerDAO.deletePassenger(request, response));
         // Get ride info of a driver
         get(versionURI + "/passengers/:id/rides", (request, response) -> passengerDAO.getRides(request, response));
-        post(versionURI + "/passengers/:id/rides", (request, response) -> {
-            // Access control
-            // Only driver can create new cars
-            String jwt = request.queryParams("token");
-            if (jwt == null) {
-                return dataToJson.d2j(new Error(401, 9003, "No token provided"));
-            }
-            try {
-                Claims claims = Jwts.parser()
-                        .setSigningKey(Application.key)
-                        .parseClaimsJws(jwt).getBody();
-                long nowMillis = System.currentTimeMillis();
-                Date now = new Date(nowMillis);
-                if (claims.getExpiration().before(now)) {
-                    return dataToJson.d2j(new Error(401, 9004, "Token expired"));
-                }
-                String id = claims.getSubject();
-                String givenId = request.params(":id");
-                if (!id.equals(givenId)) {
-                    return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-                }
-                return passengerDAO.createRide(request, response);
-            } catch (Exception e) {
-                return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-            }
-        });
+        post(versionURI + "/passengers/:id/rides", (request, response) -> return passengerDAO.createRide(request, response));
 
 
         // CRUD for Rides
