@@ -39,7 +39,7 @@ public class CarTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark140331111@att.com'," +
+            "'emailAddress':'mark200@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -52,7 +52,7 @@ public class CarTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark140331111@att.com'," +
+            "'email':'mark200@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -85,19 +85,19 @@ public class CarTest {
         token = jsonToken.get("token");
 
         //create a car for the driver
-        TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
-        Map<String, String> jsonTokenCar = resTokenCar.json();
-        assertEquals(200, resTokenCar.status);
-        assertEquals("Tesla", jsonTokenCar.get("make"));
-        assertEquals("S", jsonTokenCar.get("model"));
-        assertEquals("12345", jsonTokenCar.get("license"));
-        assertEquals("sedan", jsonTokenCar.get("carType"));
-        assertEquals("White", jsonTokenCar.get("color"));
-        assertEquals(Double.valueOf(10), jsonTokenCar.get("maxPassengers"));
-        assertEquals(Arrays.asList("EXECUTIVE"), jsonTokenCar.get("validRideTypes"));
-        assertNotNull(jsonTokenCar.get("id"));
+        TestResponse resCarCreate = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
+        Map<String, String> jsonCarCreate = resCarCreate.json();
+        assertEquals(200, resCarCreate.status);
+        assertEquals("Tesla", jsonCarCreate.get("make"));
+        assertEquals("S", jsonCarCreate.get("model"));
+        assertEquals("12345", jsonCarCreate.get("license"));
+        assertEquals("sedan", jsonCarCreate.get("carType"));
+        assertEquals("White", jsonCarCreate.get("color"));
+        assertEquals(Double.valueOf(10), jsonCarCreate.get("maxPassengers"));
+        assertEquals(Arrays.asList("EXECUTIVE"), jsonCarCreate.get("validRideTypes"));
+        assertNotNull(jsonCarCreate.get("id"));
 
-        testCarID = jsonTokenCar.get("id");
+        testCarID = jsonCarCreate.get("id");
 
         //getCar just created
         TestResponse resGet = TestResponse.request("GET", "/v1/cars/"+testCarID+"");
