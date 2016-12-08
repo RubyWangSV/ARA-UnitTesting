@@ -17,7 +17,9 @@ import static org.junit.Assert.assertNotNull;
 public class RideTest {
 
     String testDriverIDforRide;
+    String testPassengerIDforRide;
     String testRideID;
+    String testCarID;
     String tokenDriver;
     String tokenPassenger;
 
@@ -32,6 +34,7 @@ public class RideTest {
             "'fare' : 123.0," +
             "'driver' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c'," +
             "'passenger' : '32779739-8b79-4f3b-96e0-e82a599e38f7'," +
+            "'car' : ''," +
             "'routePoints' : [ { " +
             "'timestamp' : 1479360937, " +
             "'latitude' : 123.01," +
@@ -46,61 +49,6 @@ public class RideTest {
             "'longitude' : 12.11" +
             "} ]" +
             "}";
-
-    //    String requestBodyRide = String.format("{'rideType' : 'ECONOMY',
-//            'startPoint' : [ 123.456, -321.654 ],
-//            'endPoint' : [ 12.45, -32.65 ],
-//            'requestTime' : '1986-04-08 12:30:21',
-//            'pickupTime' : '1999-04-08 12:30:20',
-//            'dropOffTime' : '2000-04-08 12:30:11',
-//            'status' : 'ARRIVED',
-//            'fare' : 123.0,
-//            'driver' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c',
-//            'passenger' : '32779739-8b79-4f3b-96e0-e82a599e38f7',
-//            'routePoints' : [ {
-//        'timestamp' : 1479360937,
-//                'latitude' : 123.01,
-//                'longitude' : 12.11
-//    }, {
-//        'timestamp' : 1479361000,
-//                'latitude' : 123.01,
-//                'longitude' : 12.11
-//    }, {
-//        'timestamp' : 2479361000,
-//                'latitude' : 123.01,
-//                'longitude' : 12.11
-//    } ]}");
-
-//
-//            String.format("{'rideType':[%s],'startPoint':[%f, %f],'endPoint':[%f, %f],'requestTime':[%s],'pickupTime':[%s],'dropOffTime':[%s],'status':[%s],'fare':[%f],'driver':[%s],'passenger':[%s],'routePoints':}", "ECONOMY", 123.456, -321.654, 12.45, -32.65, "1986-04-08 12:30:21",);
-//
-//
-//            "{" +
-//            "'rideType' : 'ECONOMY'," +
-//            "'startPoint' : [ 123.456, -321.654 ]," +
-//            "'endPoint' : [ 12.45, -32.65 ],"+
-//            "'requestTime' : '1986-04-08 12:30:21'," +
-//            "'' : '1999-04-08 12:30:20'," +
-//            "'' : '2000-04-08 12:30:11'," +
-//            "'' : 'ARRIVED'," +
-//            "'' : 123.0," +
-//            "'' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c'," +
-//            "'' : '32779739-8b79-4f3b-96e0-e82a599e38f7'," +
-//            "'' : [ {
-//                'timestamp' :" + 1479360937 + ",
-//                        'latitude' :" + 123.01 +",
-//                        'longitude' :" + 12.11 +
-//                }, {
-//                'timestamp' :" + 1479361000,
-//                'latitude' :" + 123.01,
-//                'longitude' :" + 12.11
-//                }, {
-//                'timestamp' :" + 2479361000,
-//                'latitude' :"  + 123.01,
-//                'longitude' :" 12.11
-//                } ]"
-//            "}";
-//
 
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
@@ -122,7 +70,16 @@ public class RideTest {
             "'password':'1234567890'" +
             "}";
 
-    String testPassengerIDforRide;
+    String requestBodyCar = "{" +
+            "'make':'Tesla'," +
+            "'model':'S'," +
+            "'license':'12345'," +
+            "'carType':'sedan'," +
+            "'maxPassengers':10," +
+            "'color':'White'," +
+            "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+            "}";
+
     String requestBodyPassenger = "{" +
             "'firstName':'Zoe'," +
             "'lastName':'Moore'," +
@@ -168,6 +125,21 @@ public class RideTest {
 
             tokenDriver = jsonToken.get("token");
 
+//            //create a car for the driver
+//            TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverIDforRide+"/cars?token="+tokenDriver+"", requestBodyCar);
+//            Map<String, String> jsonTokenCar = resTokenCar.json();
+//            assertEquals(200, resTokenCar.status);
+//            assertEquals("Tesla", jsonTokenCar.get("make"));
+//            assertEquals("S", jsonTokenCar.get("model"));
+//            assertEquals("12345", jsonTokenCar.get("license"));
+//            assertEquals("sedan", jsonTokenCar.get("carType"));
+//            assertEquals("White", jsonTokenCar.get("color"));
+//            assertEquals(Double.valueOf(10), jsonTokenCar.get("maxPassengers"));
+//            assertEquals(Arrays.asList("EXECUTIVE"), jsonTokenCar.get("validRideTypes"));
+//            assertNotNull(jsonTokenCar.get("id"));
+
+//            testCarID = jsonTokenCar.get("id");
+
             //create a Passenger for token and ride
             TestResponse resPostPassenger = TestResponse.request("POST", "/v1/passengers", requestBodyPassenger);
             Map<String, String> jsonPostPassenger = resPostPassenger.json();
@@ -192,12 +164,17 @@ public class RideTest {
 
             tokenPassenger = jsonTokenPassegner.get("token");
 
-            //create a ride for the driver
-            TestResponse resTokenRide = TestResponse.request("POST", "/v1/drivers/"+testPassengerIDforRide+"/rides", requestBodyRide);
+            //create a ride for the passenger
+            TestResponse resTokenRide = TestResponse.request("POST", "/v1/passengers/"+testPassengerIDforRide+"/rides", requestBodyRide);
             Map<String, String> jsonTokenRide = resTokenRide.json();
             assertEquals(200, resTokenRide.status);
             assertNotNull(jsonTokenRide.get("id"));
 
             testRideID = jsonTokenRide.get("id");
+
+            //update the driver and the car to the ride
+
+            
+
     }
 }

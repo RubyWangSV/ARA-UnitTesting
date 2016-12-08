@@ -1,6 +1,7 @@
 package com.ARA.DAO;
 
 import com.ARA.Application;
+import com.ARA.module.Car;
 import com.ARA.module.Driver;
 import com.ARA.module.Passenger;
 
@@ -342,12 +343,18 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             Driver driver = getDs().find(Driver.class).field("id").equal(driverId).get();
 
-            if (!newRide.isValidRide() || driver == null) {
-                response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
-            }
+//            if (!newRide.isValidRide() || driver == null) {
+//                response.status(400);
+//                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+//            }
+
+            String carId = jsonObject.get("car").toString().replaceAll("\"", "");
+
+            Car car = getDs().find(Car.class).field("id").equal(carId).get();
+
 
             newRide.setDriver(driverId);
+//            newRide.setCar(carId);
             newRide.setPassenger(id);
 
             getDs().save(newRide);

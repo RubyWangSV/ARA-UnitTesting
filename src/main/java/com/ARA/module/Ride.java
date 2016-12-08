@@ -42,6 +42,8 @@ public class Ride {
 
     private String passenger;
 
+//    private String car;
+
     private List<routePoint> routePoints;
 
     /**
@@ -129,6 +131,10 @@ public class Ride {
     public String getPassenger() { return passenger; }
 
     public void setPassenger(String passengerId) { this.passenger = passengerId; }
+
+//    public String getCar() { return car; }
+//
+//    public void setCar(String carId) { this.car = carId; }
 
     public List<routePoint> getRoutePoints() { return routePoints; }
 
