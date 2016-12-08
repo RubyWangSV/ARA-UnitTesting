@@ -1,5 +1,6 @@
 package com.ARA.DAO;
 
+import com.ARA.Application;
 import com.ARA.module.Driver;
 import com.ARA.module.Passenger;
 
@@ -9,6 +10,8 @@ import com.ARA.util.dataToJson;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import spark.Request;
 
 import java.io.IOException;
@@ -285,6 +288,30 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
      * @throws IOException
      */
     public String createRide(Request request, Response response) throws IOException{
+        // Access control
+        // Only driver can create new cars
+//        String key = "thunderbird";
+//        String jwt = request.queryParams("token");
+//        if (jwt == null) {
+//            return dataToJson.d2j(new Error(401, 9003, "No token provided"));
+//        }
+//        try {
+//            Claims claims = Jwts.parser()
+//                    .setSigningKey(key)
+//                    .parseClaimsJws(jwt).getBody();
+//            long nowMillis = System.currentTimeMillis();
+//            Date now = new Date(nowMillis);
+//            if (claims.getExpiration().before(now)) {
+//                return dataToJson.d2j(new Error(401, 9004, "Token expired"));
+//            }
+//            String id = claims.getSubject();
+//            String givenId = request.params(":id");
+//            if (!id.equals(givenId)) {
+//                return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
+//            }
+//        } catch (Exception e) {
+//            return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
+//        }
         try{
             String id = request.params(":id");
 

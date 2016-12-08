@@ -24,7 +24,7 @@ public class PassengerTest {
     String requestBody = "{" +
             "'firstName':'Zoe'," +
             "'lastName':'Moore'," +
-            "'emailAddress':'zoe04@att.com'," +
+            "'emailAddress':'zoe05@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'1999 Castro Street'," +
             "'addressLine2':''," +
@@ -97,6 +97,41 @@ public class PassengerTest {
         assertEquals("72033", jsonDelete.get("zip"));
         assertEquals("546-777-8989", jsonDelete.get("phoneNumber"));
         assertNotNull(jsonPatch.get("id"));
+
+        //should not get deleted passenger
+        TestResponse resGetNG = TestResponse.request("GET", "/v1/passengers/"+testPassengerID+"");
+        assertEquals(400, resGetNG.status);
+
+        //should not create missing email address
+        String requestBodyCreateMissingEmailAddress = "{" +
+                "'firstName':'Zoe'," +
+                "'lastName':'Moore'," +
+                "'password':'1234567890'," +
+                "'addressLine1':'1999 Castro Street'," +
+                "'addressLine2':''," +
+                "'city':'MV'," +
+                "'state':'CA'," +
+                "'zip':'72033'," +
+                "'phoneNumber':'546-777-8989'" +
+                "}";
+        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/passengers", requestBodyCreateMissingEmailAddress);
+        assertEquals(500, resCreateMissingMake.status);
+
+        //should not create passenger with long password
+        String requestBodyCreateLongPassword = "{" +
+                "'firstName':'Zoe'," +
+                "'lastName':'Moore'," +
+                "'emailAddress':'zoe04@att.com'," +
+                "'password':'1234567890zoezoezoezoezoezoezoezoezoezoezoezoezoe'," +
+                "'addressLine1':'1999 Castro Street'," +
+                "'addressLine2':''," +
+                "'city':'MV'," +
+                "'state':'CA'," +
+                "'zip':'72033'," +
+                "'phoneNumber':'546-777-8989'" +
+                "}";
+        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/passengers", requestBodyCreateLongPassword);
+        assertEquals(400, resCreateLongMake.status);
 
     }
 }

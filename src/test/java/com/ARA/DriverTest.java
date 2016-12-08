@@ -21,11 +21,10 @@ import java.util.Map;
 public class DriverTest {
 
     String testDriverID;
-    String testDriverNGID
     String requestBody = "{" +
             "'firstName':'Bob'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'bob100@att.com'," +
+            "'emailAddress':'bob205@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -110,37 +109,44 @@ public class DriverTest {
         assertEquals("CA", jsonPost.get("licensedState"));
         assertNotNull(jsonPatch.get("id"));
 
-        testDriverNGID = jsonPatch.get("id")
-
         //should not get deleted driver
-        TestResponse resGetNG = TestResponse.request("GET", "/v1/drivers/"+testDriverNGID+"");
+        TestResponse resGetNG = TestResponse.request("GET", "/v1/drivers/"+testDriverID+"");
         assertEquals(400, resGetNG.status);
 
-        //should not create missing make
-        String requestBodyCreateMissingMake = "{" +
-                "'model':'S'," +
-                "'license':'12345'," +
-                "'driverType':'sedan'," +
-                "'maxPassengers':10," +
-                "'color':'White'," +
-                "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+        //should not create missing email address
+        String requestBodyCreateMissingEmailAddress = "{" +
+                "'firstName':'Bob'," +
+                "'lastName':'Azi'," +
+                "'password':'1234567890'," +
+                "'addressLine1':'120 El, CA'," +
+                "'addressLine2':''," +
+                "'city':'MV'," +
+                "'state':'CA'," +
+                "'zip':'99900'," +
+                "'phoneNumber':'333-999-0000'," +
+                "'drivingLicense':'X7890'," +
+                "'licensedState':'CA'" +
                 "}";
-        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/drivers?token="+"token", requestBodyCreateMissingMake);
+        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/drivers", requestBodyCreateMissingEmailAddress);
         assertEquals(500, resCreateMissingMake.status);
 
-        //should not create driver with long make
-        String requestBodyCreateLongMake = "{" +
-                "'make':'TeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMW'," +
-                "'model':'S'," +
-                "'license':'12345'," +
-                "'driverType':'sedan'," +
-                "'maxPassengers':10," +
-                "'color':'White'," +
-                "'validRideTypes':  [ \"EXECUTIVE\" ]" +
+        //should not create driver with long password
+        String requestBodyCreateLongPassword = "{" +
+                "'firstName':'Bob'," +
+                "'lastName':'Azi'," +
+                "'emailAddress':'Bob@att.com'," +
+                "'password':'1234567890BobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBobBob'," +
+                "'addressLine1':'120 El, CA'," +
+                "'addressLine2':''," +
+                "'city':'MV'," +
+                "'state':'CA'," +
+                "'zip':'99900'," +
+                "'phoneNumber':'333-999-0000'," +
+                "'drivingLicense':'X7890'," +
+                "'licensedState':'CA'" +
                 "}";
-        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/drivers?token="+"token", requestBodyCreateLongMake);
+        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/drivers", requestBodyCreateLongPassword);
         assertEquals(400, resCreateLongMake.status);
-
 
     }
 }

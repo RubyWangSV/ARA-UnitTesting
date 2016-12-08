@@ -1,11 +1,8 @@
 package com.ARA;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -41,7 +38,7 @@ public class CarTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark129@att.com'," +
+            "'emailAddress':'mark140331111@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -54,7 +51,7 @@ public class CarTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark129@att.com'," +
+            "'email':'mark140331111@att.com'," +
             "'password':'1234567890'" +
             "}";
 
