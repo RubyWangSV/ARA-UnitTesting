@@ -20,10 +20,11 @@ public class RideTest {
     String testRideID;
     String tokenDriver;
     String tokenPassenger;
+
     String requestBodyRide = "{" +
             "'rideType' : 'ECONOMY'," +
             "'startPoint' : [ 123.456, -321.654 ]," +
-            "'endPoint' : [ 12.45, -32.65 ],"+
+            "'endPoint' : [ 12.45, -32.65 ]," +
             "'requestTime' : '1986-04-08 12:30:21'," +
             "'pickupTime' : '1999-04-08 12:30:20'," +
             "'dropOffTime' : '2000-04-08 12:30:11'," +
@@ -31,20 +32,75 @@ public class RideTest {
             "'fare' : 123.0," +
             "'driver' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c'," +
             "'passenger' : '32779739-8b79-4f3b-96e0-e82a599e38f7'," +
-            "'routePoints' : [ {
-                'timestamp' :" + 1479360937 + ",
-                        'latitude' :" + 123.01 +",
-                        'longitude' :" + 12.11 +
-                }, {
-                'timestamp' :" + 1479361000,
-                'latitude' :" + 123.01,
-                'longitude' :" + 12.11
-                }, {
-                'timestamp' :" + 2479361000,
-                'latitude' :"  + 123.01,
-                'longitude' :" 12.11
-                } ]"
+            "'routePoints' : [ { " +
+            "'timestamp' : 1479360937, " +
+            "'latitude' : 123.01," +
+            "'longitude' : 12.11" +
+            "}, {" +
+            "'timestamp' : 1479361000," +
+            "'latitude' : 123.01," +
+            "'longitude' : 12.11" +
+            "}, {" +
+            "'timestamp' : 2479361000," +
+            "'latitude' : 123.01," +
+            "'longitude' : 12.11" +
+            "} ]" +
             "}";
+
+    //    String requestBodyRide = String.format("{'rideType' : 'ECONOMY',
+//            'startPoint' : [ 123.456, -321.654 ],
+//            'endPoint' : [ 12.45, -32.65 ],
+//            'requestTime' : '1986-04-08 12:30:21',
+//            'pickupTime' : '1999-04-08 12:30:20',
+//            'dropOffTime' : '2000-04-08 12:30:11',
+//            'status' : 'ARRIVED',
+//            'fare' : 123.0,
+//            'driver' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c',
+//            'passenger' : '32779739-8b79-4f3b-96e0-e82a599e38f7',
+//            'routePoints' : [ {
+//        'timestamp' : 1479360937,
+//                'latitude' : 123.01,
+//                'longitude' : 12.11
+//    }, {
+//        'timestamp' : 1479361000,
+//                'latitude' : 123.01,
+//                'longitude' : 12.11
+//    }, {
+//        'timestamp' : 2479361000,
+//                'latitude' : 123.01,
+//                'longitude' : 12.11
+//    } ]}");
+
+//
+//            String.format("{'rideType':[%s],'startPoint':[%f, %f],'endPoint':[%f, %f],'requestTime':[%s],'pickupTime':[%s],'dropOffTime':[%s],'status':[%s],'fare':[%f],'driver':[%s],'passenger':[%s],'routePoints':}", "ECONOMY", 123.456, -321.654, 12.45, -32.65, "1986-04-08 12:30:21",);
+//
+//
+//            "{" +
+//            "'rideType' : 'ECONOMY'," +
+//            "'startPoint' : [ 123.456, -321.654 ]," +
+//            "'endPoint' : [ 12.45, -32.65 ],"+
+//            "'requestTime' : '1986-04-08 12:30:21'," +
+//            "'' : '1999-04-08 12:30:20'," +
+//            "'' : '2000-04-08 12:30:11'," +
+//            "'' : 'ARRIVED'," +
+//            "'' : 123.0," +
+//            "'' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c'," +
+//            "'' : '32779739-8b79-4f3b-96e0-e82a599e38f7'," +
+//            "'' : [ {
+//                'timestamp' :" + 1479360937 + ",
+//                        'latitude' :" + 123.01 +",
+//                        'longitude' :" + 12.11 +
+//                }, {
+//                'timestamp' :" + 1479361000,
+//                'latitude' :" + 123.01,
+//                'longitude' :" + 12.11
+//                }, {
+//                'timestamp' :" + 2479361000,
+//                'latitude' :"  + 123.01,
+//                'longitude' :" 12.11
+//                } ]"
+//            "}";
+//
 
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
@@ -136,12 +192,12 @@ public class RideTest {
 
             tokenPassenger = jsonTokenPassegner.get("token");
 
-//            //create a ride for the driver
-//            TestResponse resTokenRide = TestResponse.request("POST", "/v1/drivers/"+testPassengerIDforRide+"/rides", requestBodyRide);
-//            Map<String, String> jsonTokenRide = resTokenRide.json();
-//            assertEquals(200, resTokenRide.status);
-//            assertNotNull(jsonTokenRide.get("id"));
-//
-//            testRideID = jsonTokenRide.get("id");
+            //create a ride for the driver
+            TestResponse resTokenRide = TestResponse.request("POST", "/v1/drivers/"+testPassengerIDforRide+"/rides", requestBodyRide);
+            Map<String, String> jsonTokenRide = resTokenRide.json();
+            assertEquals(200, resTokenRide.status);
+            assertNotNull(jsonTokenRide.get("id"));
+
+            testRideID = jsonTokenRide.get("id");
     }
 }
