@@ -120,11 +120,11 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             Driver newDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber,drivingLicense,licensedState);
 
-            if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
-                    || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
-                response.status(400);
-                return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
-            }
+//            if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
+//                    || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
+//                response.status(400);
+//                return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+//            }
 
             if (!newDriver.isValidDriver()) {
                 response.status(400);

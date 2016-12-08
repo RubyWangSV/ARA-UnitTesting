@@ -15,8 +15,10 @@ import java.util.Map;
  * implementation of Driver Test - CRUD
  * @author Edam & Ruby
  * @version 4.0.0
- * @Note: Change required every test run -
- *        1. "emailAddress" in requestBody
+ * @Note: Action 1 or action 2 is needed for test
+ *        1. Mark out email duplicate validation in DriverDAO 123-127
+ *        2. Change required every test run -
+ *        - "emailAddress" in requestBody
  */
 public class DriverTest {
 

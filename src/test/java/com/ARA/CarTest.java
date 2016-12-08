@@ -13,11 +13,12 @@ import static org.junit.Assert.assertNotNull;
  * implementation of Car Test - CRUD & Token Test (create a car with token verified)
  * @author Edam & Ruby
  * @version 4.0.0
- * @Note: Change required every test run -
- *        1. "emailAddress" in requestBodyX
- *        2. "email" in requestBodyToken (email & password need to match requestBodyX)
+ * @Note: Action 1 or action 2 is needed for test
+ *        1. Mark out email duplicate validation in DriverDAO 123-127
+ *        2. Change required every test run -
+ *        - "emailAddress" in requestBodyX
+ *        - "email" in requestBodyToken (email & password need to match requestBodyX)
  */
-
 
 public class CarTest {
     String testCarID;
