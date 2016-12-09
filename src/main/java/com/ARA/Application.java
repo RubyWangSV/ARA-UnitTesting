@@ -122,6 +122,33 @@ public class Application {
             }
         });
 
+        // Access control
+        // Only driver can create new cars
+        before(versionURI + "/drivers/:id/cars", (req, res)
+                -> {
+            String jwt = req.queryParams("token");
+            if (jwt == null) {
+                halt(401, dataToJson.d2j(new Error(400, 9003, "No token provided")));
+            }
+            try {
+                Claims claims = Jwts.parser()
+                        .setSigningKey(key)
+                        .parseClaimsJws(jwt).getBody();
+                long nowMillis = System.currentTimeMillis();
+                Date now = new Date(nowMillis);
+                if (claims.getExpiration().before(now)) {
+                    halt(401, dataToJson.d2j(new Error(401, 9004, "Token expired")));
+                }
+                String id = claims.getSubject();
+                String givenId = req.params(":id");
+                if (!id.equals(givenId)) {
+                    halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
+                }
+            } catch (Exception e) {
+                halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
+            }
+        });
+
         // CRUD for Cars
         get(versionURI + "/cars", (request, response) -> carDAO.getAllCars(request, response));
         get(versionURI + "/cars/:id", (request, response) -> carDAO.getCar(request, response));

@@ -39,7 +39,7 @@ public class CarTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark99999@att.com'," +
+            "'emailAddress':'mark1234@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -52,7 +52,7 @@ public class CarTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark99999@att.com'," +
+            "'email':'mark1234@att.com'," +
             "'password':'1234567890'" +
             "}";
 

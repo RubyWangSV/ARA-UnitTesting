@@ -34,21 +34,15 @@ public class RideTest {
             "'fare' : 123.0," +
             "'driver' : '88b0c8e3-b98e-4a02-ba0c-b427eb83121c'," +
             "'passenger' : '32779739-8b79-4f3b-96e0-e82a599e38f7'," +
-            "'car' : ''," +
-            "'routePoints' : [ { " +
-            "'timestamp' : 1479360937, " +
-            "'latitude' : 123.01," +
-            "'longitude' : 12.11" +
-            "}, {" +
-            "'timestamp' : 1479361000," +
-            "'latitude' : 123.01," +
-            "'longitude' : 12.11" +
-            "}, {" +
-            "'timestamp' : 2479361000," +
-            "'latitude' : 123.01," +
-            "'longitude' : 12.11" +
-            "} ]" +
+            "'car' : '2d8dd17a-e1e6-44e8-8fd6-4032ce35f402'," +
+            "'routePoints' : ''" +
             "}";
+
+    String requestBodyRoutePoint = "{"+
+                "'timestamp' : 1479361000, " +
+                "'latitude' : 125.01," +
+                "'longitude' : 12.11" +
+                "}";
 
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
@@ -173,8 +167,28 @@ public class RideTest {
             testRideID = jsonTokenRide.get("id");
 
             //update the driver and the car to the ride
+            String requestBodyRideInfo = "{" +
+                        "'driver':" + testDriverIDforRide + "," +
+                        "'car':" + "2d8dd17a-e1e6-44e8-8fd6-4032ce35f402" +
+                    "}";
 
+            TestResponse resTokenRideUpdate = TestResponse.request("PATCH", "/v1/rides/" + testRideID +"", requestBodyRideInfo);
+            Map<String, String> jsonTokenRideUpdate = resTokenRideUpdate.json();
+            assertEquals(200, resTokenRideUpdate.status);
+            assertNotNull(jsonTokenRideUpdate.get("id"));
 
+            //create routePoints
+            TestResponse resRoutePoints = TestResponse.request("POST", "/v1/rides/" + testRideID +"/routePoints", requestBodyRoutePoint);
+            Map<String, String> jsonRoutePoints = resRoutePoints.json();
+            assertEquals(200, resRoutePoints.status);
+
+            //Get routePoints
+            TestResponse resRoutePointsGet = TestResponse.request("GET", "/v1/rides/" + testRideID +"/routePoints");
+            assertEquals(200, resRoutePointsGet.status);
+
+            //Get latest routePoints
+            TestResponse resLatestRoutePointsGet = TestResponse.request("GET", "/v1/rides/" + testRideID +"/routePoints/latest");
+            assertEquals(200, resLatestRoutePointsGet.status);
 
     }
 }

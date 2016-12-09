@@ -289,30 +289,6 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
      * @throws IOException
      */
     public String createRide(Request request, Response response) throws IOException{
-        // Access control
-        // Only driver can create new cars
-//        String key = "thunderbird";
-//        String jwt = request.queryParams("token");
-//        if (jwt == null) {
-//            return dataToJson.d2j(new Error(401, 9003, "No token provided"));
-//        }
-//        try {
-//            Claims claims = Jwts.parser()
-//                    .setSigningKey(key)
-//                    .parseClaimsJws(jwt).getBody();
-//            long nowMillis = System.currentTimeMillis();
-//            Date now = new Date(nowMillis);
-//            if (claims.getExpiration().before(now)) {
-//                return dataToJson.d2j(new Error(401, 9004, "Token expired"));
-//            }
-//            String id = claims.getSubject();
-//            String givenId = request.params(":id");
-//            if (!id.equals(givenId)) {
-//                return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-//            }
-//        } catch (Exception e) {
-//            return dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token"));
-//        }
         try{
             String id = request.params(":id");
 
@@ -343,18 +319,16 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             Driver driver = getDs().find(Driver.class).field("id").equal(driverId).get();
 
-//            if (!newRide.isValidRide() || driver == null) {
-//                response.status(400);
-//                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
-//            }
-
             String carId = jsonObject.get("car").toString().replaceAll("\"", "");
 
             Car car = getDs().find(Car.class).field("id").equal(carId).get();
 
-
+            if (!newRide.isValidRide()) {
+                response.status(400);
+                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+            }
             newRide.setDriver(driverId);
-//            newRide.setCar(carId);
+            newRide.setCar(carId);
             newRide.setPassenger(id);
 
             getDs().save(newRide);
