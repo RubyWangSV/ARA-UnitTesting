@@ -1,5 +1,7 @@
-package com.ARA.DAO;
+package com.ARA.util;
 
+import com.ARA.DAO.DriverDAO;
+import com.ARA.DAO.PassengerDAO;
 import com.ARA.module.Driver;
 import com.ARA.module.Passenger;
 import com.ARA.module.Token;
@@ -27,11 +29,11 @@ import spark.Response;
 
 
 /**
- * implementation of Token's Data Access Object
+ * Session that creates a token with given credentials
  * @author Edam & Ruby
  * @version 2.0.0
  */
-public class SessionDAO {
+public class Session {
 
     private static MorphiaService morphiaService;
     private static DriverDAO driverDAO;
@@ -40,7 +42,7 @@ public class SessionDAO {
     // sign JWT with key secret
     private static String key = "thunderbird";
 
-    public SessionDAO() {
+    public Session() {
 
         this.morphiaService = new MorphiaService();
         this.driverDAO = new DriverDAO(Driver.class, morphiaService.getDatastore());

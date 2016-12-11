@@ -7,8 +7,6 @@ import com.ARA.util.*;
 import static spark.Spark.*;
 
 import com.ARA.util.Error;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import spark.Request;
@@ -24,7 +22,7 @@ public class Application {
     private static DriverDAO driverDAO;
     private static PassengerDAO passengerDAO;
     private static RideDAO rideDAO;
-    private static SessionDAO sessionDAO;
+    private static Session session;
 
     // sign JWT with key secret
     private static String key = "thunderbird";
@@ -36,7 +34,7 @@ public class Application {
         this.driverDAO = new DriverDAO(Driver.class, morphiaService.getDatastore());
         this.passengerDAO = new PassengerDAO(Passenger.class, morphiaService.getDatastore());
         this.rideDAO = new RideDAO(Ride.class, morphiaService.getDatastore());
-        this.sessionDAO = new SessionDAO();
+        this.session = new Session();
     }
 
     public static void main(String[] args) {
@@ -51,7 +49,7 @@ public class Application {
         get("/", (request, response) -> "Hello World!");
 
         // session
-        post(versionURI + "/sessions", (request, response) -> sessionDAO.createToken(request, response));
+        post(versionURI + "/sessions", (request, response) -> session.createToken(request, response));
 
         // Access control - token in header
         // Only driver can create new cars

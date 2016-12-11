@@ -99,7 +99,6 @@ public class DriverTest {
         Map<String, String> jsonDelete  = resDelete .json();
         assertEquals(200, resDelete.status);
         assertEquals("Mark", jsonDelete.get("firstName"));
-//        assertEquals("Bob", jsonDelete.get("firstName"));
         assertEquals("Azi", jsonDelete.get("lastName"));
         assertEquals("120 El, CA", jsonDelete.get("addressLine1"));
         assertEquals("", jsonDelete.get("addressLine2"));
