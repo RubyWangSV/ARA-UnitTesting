@@ -11,8 +11,9 @@ import static org.junit.Assert.assertNotNull;
  * implementation of Ride Test - CRUD
  * @author Edam & Ruby
  * @version 4.0.0
- * @Note: 1. Mark out email duplicate verification in DriverDAO 123-127
- *        2. Mark out toke verification (PassengerDAO-)
+ * @Note: 1. change email for requestBodyDriver & requestBodyDriverToken & requestBodyPassenger & requestBodyPassegnerToken
+ *        2. Mark out email duplicate verification in DriverDAO 123-127
+ *        3. Mark out toke verification (PassengerDAO-)
  */
 public class RideTest {
 
@@ -47,7 +48,7 @@ public class RideTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'RideTestDriver01@att.com'," +
+            "'emailAddress':'RideTestDriver04@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -60,7 +61,7 @@ public class RideTest {
             "}";
 
     String requestBodyDriverToken = "{" +
-            "'email':'RideTestDriver01@att.com'," +
+            "'email':'RideTestDriver04@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -77,7 +78,7 @@ public class RideTest {
     String requestBodyPassenger = "{" +
             "'firstName':'Zoe'," +
             "'lastName':'Moore'," +
-            "'emailAddress':'RideTestPassenger01@att.com'," +
+            "'emailAddress':'RideTestPassenger04@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'1999 Castro Street'," +
             "'addressLine2':''," +
@@ -88,7 +89,7 @@ public class RideTest {
             "}";
 
     String requestBodyPassegnerToken = "{" +
-            "'email':'RideTestPassenger01@att.com'," +
+            "'email':'RideTestPassenger04@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -119,20 +120,20 @@ public class RideTest {
 
             tokenDriver = jsonToken.get("token");
 
-//            //create a car for the driver
-//            TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverIDforRide+"/cars?token="+tokenDriver+"", requestBodyCar);
-//            Map<String, String> jsonTokenCar = resTokenCar.json();
-//            assertEquals(200, resTokenCar.status);
-//            assertEquals("Tesla", jsonTokenCar.get("make"));
-//            assertEquals("S", jsonTokenCar.get("model"));
-//            assertEquals("12345", jsonTokenCar.get("license"));
-//            assertEquals("sedan", jsonTokenCar.get("carType"));
-//            assertEquals("White", jsonTokenCar.get("color"));
-//            assertEquals(Double.valueOf(10), jsonTokenCar.get("maxPassengers"));
-//            assertEquals(Arrays.asList("EXECUTIVE"), jsonTokenCar.get("validRideTypes"));
-//            assertNotNull(jsonTokenCar.get("id"));
+            //create a car for the driver
+            TestResponse resTokenCar = TestResponse.request("POST", "/v1/drivers/"+testDriverIDforRide+"/cars", requestBodyCar, tokenDriver);
+            Map<String, String> jsonTokenCar = resTokenCar.json();
+            assertEquals(200, resTokenCar.status);
+            assertEquals("Tesla", jsonTokenCar.get("make"));
+            assertEquals("S", jsonTokenCar.get("model"));
+            assertEquals("12345", jsonTokenCar.get("license"));
+            assertEquals("sedan", jsonTokenCar.get("carType"));
+            assertEquals("White", jsonTokenCar.get("color"));
+            assertEquals(Double.valueOf(10), jsonTokenCar.get("maxPassengers"));
+            assertEquals(Arrays.asList("EXECUTIVE"), jsonTokenCar.get("validRideTypes"));
+            assertNotNull(jsonTokenCar.get("id"));
 
-//            testCarID = jsonTokenCar.get("id");
+            testCarID = jsonTokenCar.get("id");
 
             //create a Passenger for token and ride
             TestResponse resPostPassenger = TestResponse.request("POST", "/v1/passengers", requestBodyPassenger);
@@ -190,5 +191,52 @@ public class RideTest {
             TestResponse resLatestRoutePointsGet = TestResponse.request("GET", "/v1/rides/" + testRideID +"/routePoints/latest");
             assertEquals(200, resLatestRoutePointsGet.status);
 
+            //delete driver
+            TestResponse resDeleteDriver = TestResponse.request("DELETE", "/v1/drivers/"+testDriverIDforRide+"");
+            Map<String, String> jsonDelete  = resDeleteDriver .json();
+            assertEquals(200, resDeleteDriver.status);
+            assertEquals("Mark", jsonDelete.get("firstName"));
+            assertEquals("Azi", jsonDelete.get("lastName"));
+            assertEquals("120 El, CA", jsonDelete.get("addressLine1"));
+            assertEquals("", jsonDelete.get("addressLine2"));
+            assertEquals("MV", jsonDelete.get("city"));
+            assertEquals("CA", jsonDelete.get("state"));
+            assertEquals("99900", jsonDelete.get("zip"));
+            assertEquals("333-999-0000", jsonDelete.get("phoneNumber"));
+            assertEquals("X7890", jsonDelete.get("drivingLicense"));
+            assertEquals("CA", jsonDelete.get("licensedState"));
+            assertNotNull(jsonDelete.get("id"));
+
+            //delete car
+            TestResponse resDeleteCar = TestResponse.request("DELETE", "/v1/cars/"+testCarID+"");
+            Map<String, String> jsonDeleteCar  = resDeleteCar .json();
+            assertEquals(200, resDeleteCar.status);
+            assertEquals("Tesla", jsonDeleteCar.get("make"));
+            assertEquals("S", jsonDeleteCar.get("model"));
+            assertEquals("12345", jsonDeleteCar.get("license"));
+            assertEquals("sedan", jsonDeleteCar.get("carType"));
+            assertEquals("White", jsonDeleteCar.get("color"));
+            assertEquals(Double.valueOf(10), jsonDeleteCar.get("maxPassengers"));
+            assertEquals(Arrays.asList("EXECUTIVE"), jsonDeleteCar.get("validRideTypes"));
+            assertNotNull(jsonDeleteCar.get("id"));
+
+            //delete passenger
+            TestResponse resDeletePassenger = TestResponse.request("DELETE", "/v1/passengers/"+testPassengerIDforRide+"");
+            Map<String, String> jsonDeletePassenger  = resDeletePassenger.json();
+            assertEquals(200, resDeletePassenger.status);
+            assertEquals("Zoe", jsonDeletePassenger.get("firstName"));
+            assertEquals("Moore", jsonDeletePassenger.get("lastName"));
+            assertEquals("1999 Castro Street", jsonDeletePassenger.get("addressLine1"));
+            assertEquals("", jsonDeletePassenger.get("addressLine2"));
+            assertEquals("MV", jsonDeletePassenger.get("city"));
+            assertEquals("CA", jsonDeletePassenger.get("state"));
+            assertEquals("72033", jsonDeletePassenger.get("zip"));
+            assertEquals("546-777-8989", jsonDeletePassenger.get("phoneNumber"));
+            assertNotNull(jsonDeletePassenger.get("id"));
+
+            //delete ride
+            TestResponse resDeleteRide = TestResponse.request("DELETE", "/v1/rides/"+testRideID+"");
+            Map<String, String> jsonDeleteRide  = resDeleteRide.json();
+            assertEquals(200, resDeleteRide.status);
     }
 }

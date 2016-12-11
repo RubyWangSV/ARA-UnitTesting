@@ -99,16 +99,16 @@ public class DriverTest {
         Map<String, String> jsonDelete  = resDelete .json();
         assertEquals(200, resDelete.status);
         assertEquals("Mark", jsonDelete .get("firstName"));
-        assertEquals("Bob", jsonPost.get("firstName"));
-        assertEquals("Azi", jsonPost.get("lastName"));
-        assertEquals("120 El, CA", jsonPost.get("addressLine1"));
-        assertEquals("", jsonPost.get("addressLine2"));
-        assertEquals("MV", jsonPost.get("city"));
-        assertEquals("CA", jsonPost.get("state"));
-        assertEquals("99900", jsonPost.get("zip"));
-        assertEquals("333-999-0000", jsonPost.get("phoneNumber"));
-        assertEquals("X7890", jsonPost.get("drivingLicense"));
-        assertEquals("CA", jsonPost.get("licensedState"));
+        assertEquals("Bob", jsonDelete.get("firstName"));
+        assertEquals("Azi", jsonDelete.get("lastName"));
+        assertEquals("120 El, CA", jsonDelete.get("addressLine1"));
+        assertEquals("", jsonDelete.get("addressLine2"));
+        assertEquals("MV", jsonDelete.get("city"));
+        assertEquals("CA", jsonDelete.get("state"));
+        assertEquals("99900", jsonDelete.get("zip"));
+        assertEquals("333-999-0000", jsonDelete.get("phoneNumber"));
+        assertEquals("X7890", jsonDelete.get("drivingLicense"));
+        assertEquals("CA", jsonDelete.get("licensedState"));
         assertNotNull(jsonPatch.get("id"));
 
         //should not get deleted driver

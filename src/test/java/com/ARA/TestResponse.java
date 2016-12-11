@@ -82,4 +82,37 @@ public class TestResponse {
             return new TestResponse(connectionCode, "");
         }
     }
+
+    public static TestResponse request(String method, String path, String jsonBody, String token) {
+        int connectionCode = 0;
+        try {
+
+            URL url = new URL("http://localhost:8080" + path);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            if (method == "PATCH"){
+                connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                connection.setRequestMethod("POST");
+            }
+            else{
+                connection.setRequestMethod(method);
+            }
+            connection.setRequestProperty("token", token);
+            connection.setDoOutput(true);
+            connection.connect();
+
+            OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
+            wr.write(jsonBody);
+            wr.flush();
+
+            connectionCode = connection.getResponseCode();
+            String body = IOUtils.toString(connection.getInputStream());
+            return new TestResponse(connection.getResponseCode(), body);
+        } catch (IOException e) {
+            e.printStackTrace();
+            //fail("Sending request failed: " + e.getMessage());
+            return new TestResponse(connectionCode, "");
+        }
+    }
+
 }

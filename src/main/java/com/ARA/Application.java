@@ -5,29 +5,14 @@ import com.ARA.DAO.*;
 import com.ARA.util.*;
 
 import static spark.Spark.*;
-import static spark.route.HttpMethod.before;
 
 import com.ARA.util.Error;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import org.mongodb.morphia.query.Query;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Date;
-
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.impl.crypto.MacProvider;
 
-import javax.xml.bind.DatatypeConverter;
-
+import java.util.Date;
 
 public class Application {
 
@@ -36,6 +21,7 @@ public class Application {
     private static DriverDAO driverDAO;
     private static PassengerDAO passengerDAO;
     private static RideDAO rideDAO;
+    private static SessionDAO sessionDAO;
 
     // sign JWT with key secret
     private static String key = "thunderbird";
@@ -47,7 +33,7 @@ public class Application {
         this.driverDAO = new DriverDAO(Driver.class, morphiaService.getDatastore());
         this.passengerDAO = new PassengerDAO(Passenger.class, morphiaService.getDatastore());
         this.rideDAO = new RideDAO(Ride.class, morphiaService.getDatastore());
-
+        this.sessionDAO = new SessionDAO();
     }
 
     public static void main(String[] args) {
@@ -62,85 +48,33 @@ public class Application {
         get("/", (request, response) -> "Hello World!");
 
         // session
-        post(versionURI + "/sessions", (request, response) -> {
-            try {
+        post(versionURI + "/sessions", (request, response) -> sessionDAO.createToken(request, response));
 
-                JsonObject reqBody = (JsonObject) new JsonParser().parse(request.body());
-                String email = reqBody.get("email").toString().replaceAll("\"", "");
-                String password = reqBody.get("password").toString().replaceAll("\"", "");
-                Driver driver = driverDAO.createQuery()
-                        .filter("emailAddress", email)
-                        .get();
-
-                Passenger passenger = passengerDAO.createQuery()
-                        .filter("emailAddress", email)
-                        .get();
-
-                String driverPassword = driver != null ? driver.getPassword() : null;
-                String passengerPassword = passenger != null ? passenger.getPassword() : null;
-
-                PasswordEncoder pe = new PasswordEncoder();
-
-                boolean isDriver = pe.validatePassword(password, driverPassword);
-                boolean isPassenger = pe.validatePassword(password, passengerPassword);
-
-                if (!isDriver && !isPassenger) {
-                    response.status(400);
-                    return dataToJson.d2j(new Error(400, 9001, "Wrong username or password"));
-                }
-
-                String userId = (driver != null) ? driver.getId() : passenger.getId();
-
-                // the JWT signature algorithm will be using to sign the token
-                SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-
-                long nowMillis = System.currentTimeMillis();
-                Date now = new Date(nowMillis);
-
-                // set the JWT Claims, userId as body
-                JwtBuilder builder = Jwts.builder()
-                        .setIssuedAt(now)
-                        .setSubject(userId)
-                        .signWith(signatureAlgorithm, key);
-
-                // token will expired in 10 min
-                long ttlMillis = 10 * 60 * 1000;
-                long expMillis = nowMillis + ttlMillis;
-                Date exp = new Date(expMillis);
-                builder.setExpiration(exp);
-
-                String tokenString = builder.compact();
-
-                token token = new token(tokenString);
-
-                response.status(200);
-                return dataToJson.d2j(token);
-
-            } catch (Exception e) {
-                response.status(500);
-                return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
-            }
-        });
-
-        // Access control
+        // Access control - token in header
         // Only driver can create new cars
-        before(versionURI + "/drivers/:id/cars", (req, res)
+        // Both driver and passenger can crete ride
+        before(versionURI + "/drivers/:id/*", (request, response)
                 -> {
-            String jwt = req.queryParams("token");
-            if (jwt == null) {
-                halt(401, dataToJson.d2j(new Error(400, 9003, "No token provided")));
+            String tokenValue = request.headers("token");
+            String path = request.pathInfo();
+            String method = request.requestMethod();
+            if (!(method == "POST" && (path.contains("cars") || path.contains("rides")))){
+                halt(401, dataToJson.d2j(new Error(401, 1000, "Invalid resource.")));
+            }
+            if ( tokenValue == null) {
+                halt(400, dataToJson.d2j(new Error(400, 9003, "No token provided")));
             }
             try {
                 Claims claims = Jwts.parser()
                         .setSigningKey(key)
-                        .parseClaimsJws(jwt).getBody();
+                        .parseClaimsJws(tokenValue).getBody();
                 long nowMillis = System.currentTimeMillis();
                 Date now = new Date(nowMillis);
                 if (claims.getExpiration().before(now)) {
                     halt(401, dataToJson.d2j(new Error(401, 9004, "Token expired")));
                 }
                 String id = claims.getSubject();
-                String givenId = req.params(":id");
+                String givenId = request.params(":id");
                 if (!id.equals(givenId)) {
                     halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
                 }
@@ -148,6 +82,7 @@ public class Application {
                 halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
             }
         });
+
 
         // CRUD for Cars
         get(versionURI + "/cars", (request, response) -> carDAO.getAllCars(request, response));
@@ -166,7 +101,7 @@ public class Application {
         get(versionURI + "/drivers/:id/cars", (request, response) -> driverDAO.getCars(request, response));
         post(versionURI + "/drivers/:id/cars", (request, response) -> driverDAO.createCar(request, response));
 
-        // Get ride info of a driver
+        // Get and create ride info of a driver
         get(versionURI + "/drivers/:id/rides", (request, response) -> driverDAO.getRides(request, response));
         post(versionURI + "/drivers/:id/rides", (request, response) -> driverDAO.createRide(request, response));
 
@@ -190,5 +125,4 @@ public class Application {
         get(versionURI + "/rides/:id/routePoints/latest", (request, response) -> rideDAO.getLastestRoutePoints(request, response));
 
     }
-
 }

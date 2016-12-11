@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNotNull;
  * implementation of Car Test - CRUD & Token Test (create a car with token verified)
  * @author Edam & Ruby
  * @version 4.0.0
- * @Note: Action 1 or action 2 is needed for test
+ * @Note: Action 1 && action 2 are needed for test
  *        1. Mark out email duplicate validation in DriverDAO 123-127
  *        2. Change required every test run -
  *        - "emailAddress" in requestBodyX
@@ -39,7 +39,7 @@ public class CarTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'mark1234@att.com'," +
+            "'emailAddress':'qq03@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -52,10 +52,20 @@ public class CarTest {
             "}";
 
     String requestBodyToken = "{" +
-            "'email':'mark1234@att.com'," +
+            "'email':'qq03@att.com'," +
             "'password':'1234567890'" +
             "}";
 
+    /** This test is used to test Car.
+     * 1. create driver for token use
+     * 2. create token for driver
+     * 3. create a car
+     * 4. get car
+     * 5. patch car
+     * 6. delete car
+     * 7. should not create a car with missing make
+     * 8. should not create a car with long make
+     * */
     @Test
     public void Car() throws IOException {
 
@@ -85,7 +95,7 @@ public class CarTest {
         token = jsonToken.get("token");
 
         //create a car for the driver
-        TestResponse resCarCreate = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+token+"", requestBodyCar);
+        TestResponse resCarCreate = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars", requestBodyCar, token);
         Map<String, String> jsonCarCreate = resCarCreate.json();
         assertEquals(200, resCarCreate.status);
         assertEquals("Tesla", jsonCarCreate.get("make"));
@@ -159,12 +169,11 @@ public class CarTest {
 
         testCarNGID = jsonPatch.get("id");
 
-
         //should not get deleted car
         TestResponse resGetNG = TestResponse.request("GET", "/v1/cars/"+testCarNGID+"");
         assertEquals(400, resGetNG.status);
 
-        //should not create missing make
+        //should not create a car with missing make
         String requestBodyCreateMissingMake = "{" +
                 "'model':'S'," +
                 "'license':'12345'," +
@@ -173,10 +182,10 @@ public class CarTest {
                 "'color':'White'," +
                 "'validRideTypes':  [ \"EXECUTIVE\" ]" +
                 "}";
-        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+"token", requestBodyCreateMissingMake);
+        TestResponse resCreateMissingMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars", requestBodyCreateMissingMake, token);
         assertEquals(500, resCreateMissingMake.status);
 
-        //should not create car with long make
+        //should not create a car with long make
         String requestBodyCreateLongMake = "{" +
                 "'make':'TeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMWTeslaToyotaAudiBMW'," +
                 "'model':'S'," +
@@ -186,9 +195,7 @@ public class CarTest {
                 "'color':'White'," +
                 "'validRideTypes':  [ \"EXECUTIVE\" ]" +
                 "}";
-        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars?token="+"token", requestBodyCreateLongMake);
+        TestResponse resCreateLongMake = TestResponse.request("POST", "/v1/drivers/"+testDriverXID+"/cars", requestBodyCreateLongMake, token);
         assertEquals(400, resCreateLongMake.status);
-
-
     }
 }

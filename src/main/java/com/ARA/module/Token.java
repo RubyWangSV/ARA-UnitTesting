@@ -1,17 +1,15 @@
-package com.ARA.util;
+package com.ARA.module;
 
 /**
  * implementation to token
- * @author Edam
+ * @author Edam & Ruby
  * @version 2.0.0
  */
 
-public class token {
+public class Token {
     private String token;
 
-    public token() {}
-
-    public token(String token) { this.token = token; }
+    public Token(String token) { this.token = token; }
 
     public void setToken(String token) {
         this.token = token;
