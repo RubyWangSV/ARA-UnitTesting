@@ -21,7 +21,7 @@ public class dataToJson {
      * @return Json format.
      * @throws IOException
      */ 
-    public static String d2j(Object data) throws IOException {
+    public static String dataToJsonFormat(Object data) throws IOException {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JSR310Module());

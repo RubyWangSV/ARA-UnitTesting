@@ -62,10 +62,10 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             List<Driver> allDriver = getDs().find(Driver.class).offset(offsetId).limit(count).order(sortBy).asList();
 
             response.status(200);
-            return dataToJson.d2j(allDriver);
+            return dataToJson.dataToJsonFormat(allDriver);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -81,13 +81,13 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1003, "Given driver does not exist"));
             }
             response.status(200);
-            return dataToJson.d2j(driver);
+            return dataToJson.dataToJsonFormat(driver);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -115,7 +115,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             String licensedState = jsonObject.get("licensedState").toString().replaceAll("\"", "");
             if (password.length() > 20 || password.length() < 8) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             Driver newDriver = new Driver(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber,drivingLicense,licensedState);
@@ -123,21 +123,21 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 //            if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
 //                    || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
 //                response.status(400);
-//                return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+//                return dataToJson.dataToJsonFormat(new Error(400, 3000, "email address already taken"));
 //            }
 
             if (!newDriver.isValidDriver()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(newDriver);
             response.status(200);
-            return dataToJson.d2j(newDriver);
+            return dataToJson.dataToJsonFormat(newDriver);
 
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -169,7 +169,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                 if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
                         || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
                     response.status(400);
-                    return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+                    return dataToJson.dataToJsonFormat(new Error(400, 3000, "email address already taken"));
                 }
                 driver.setEmailAddress(emailAddress);
             }
@@ -178,7 +178,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                 String password = jsonObject.get("password").toString().replaceAll("\"", "");
                 if (password.length() > 20 || password.length() < 8) {
                     response.status(400);
-                    return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                    return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
                 }
                 driver.setPassword(password);
             }
@@ -225,15 +225,15 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (!driver.isValidDriver()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(driver);
             response.status(200);
-            return dataToJson.d2j(driver);
+            return dataToJson.dataToJsonFormat(driver);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
 
     }
@@ -250,14 +250,14 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1003, "Given driver does not exist"));
             }
             getDs().delete(driver);
             response.status(200);
-            return dataToJson.d2j(driver);
+            return dataToJson.dataToJsonFormat(driver);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -273,7 +273,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1003, "Given driver does not exist"));
             }
             List<String> carIds = driver.getCars();
             List<Car> cars = new ArrayList<>();
@@ -282,16 +282,16 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                     Car car = getDs().find(Car.class).field("id").equal(carId).get();
                     if (car == null) {
                         response.status(400);
-                        return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
+                        return dataToJson.dataToJsonFormat(new Error(400, 1002, "Given car does not exist"));
                     }
                     cars.add(car);
                 }
             }
             response.status(200);
-            return dataToJson.d2j(cars);
+            return dataToJson.dataToJsonFormat(cars);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -307,7 +307,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1003, "Given driver does not exist"));
             }
             // Create a new car
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
@@ -326,7 +326,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (!newCar.isValidCar()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
             // save to Cars
             getDs().save(newCar);
@@ -334,10 +334,10 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             driver.addCar(newCar.getId());
             getDs().save(driver);
             response.status(200);
-            return dataToJson.d2j(newCar);
+            return dataToJson.dataToJsonFormat(newCar);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -353,7 +353,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1003, "Given driver does not exist"));
             }
             List<String> rideIds = driver.getRides();
             List<Ride> rides = new ArrayList<>();
@@ -362,16 +362,16 @@ public class DriverDAO extends BasicDAO<Driver, String> {
                     Ride ride = getDs().find(Ride.class).field("id").equal(rideId).get();
                     if (ride == null) {
                         response.status(400);
-                        return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                        return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
                     }
                     rides.add(ride);
                 }
             }
             response.status(200);
-            return dataToJson.d2j(rides);
+            return dataToJson.dataToJsonFormat(rides);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -387,7 +387,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             Driver driver = getDs().find(Driver.class).field("id").equal(id).get();
             if (driver == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1003, "Given driver does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1003, "Given driver does not exist"));
             }
 
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
@@ -417,7 +417,7 @@ public class DriverDAO extends BasicDAO<Driver, String> {
 
             if (!newRide.isValidRide() || passenger == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             newRide.setDriver(id);
@@ -431,11 +431,11 @@ public class DriverDAO extends BasicDAO<Driver, String> {
             passenger.addRide(newRide.getId());
             getDs().save(passenger);
             response.status(200);
-            return dataToJson.d2j(newRide);
+            return dataToJson.dataToJsonFormat(newRide);
 
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 }

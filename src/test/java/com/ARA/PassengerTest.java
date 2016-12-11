@@ -36,6 +36,15 @@ public class PassengerTest {
             "'phoneNumber':'546-777-8989'" +
             "}";
 
+    /** This test is used to test Passenger.
+     * 1. create passenger
+     * 2. get passenger
+     * 3. patch passenger with update info
+     * 4. delete passenger
+     * 5. should not get deleted passenger
+     * 6. should not create a passenger with missing email address
+     * 7. should not create a passenger with with long password
+     * */
     @Test
     public void Passenger() throws IOException {
 
@@ -104,7 +113,7 @@ public class PassengerTest {
         TestResponse resGetNG = TestResponse.request("GET", "/v1/passengers/"+testPassengerID+"");
         assertEquals(400, resGetNG.status);
 
-        //should not create missing email address
+        //should not create a passenger with missing email address
         String requestBodyCreateMissingEmailAddress = "{" +
                 "'firstName':'Zoe'," +
                 "'lastName':'Moore'," +

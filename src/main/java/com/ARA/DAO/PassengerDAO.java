@@ -60,10 +60,10 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
              List<Passenger> allPassenger = getDs().find(Passenger.class).offset(offsetId).limit(count).order(sortBy).asList();
 
              response.status(200);
-             return dataToJson.d2j(allPassenger);
+             return dataToJson.dataToJsonFormat(allPassenger);
          } catch (Exception e) {
              response.status(500);
-             return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+             return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
          }
     }
 
@@ -79,13 +79,13 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
             if (passenger == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1004, "Given passenger does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1004, "Given passenger does not exist"));
             }
             response.status(200);
-            return dataToJson.d2j(passenger);
+            return dataToJson.dataToJsonFormat(passenger);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -111,7 +111,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             String phoneNumber = jsonObject.get("phoneNumber").toString().replaceAll("\"", "");    
             if (password.length() > 20 || password.length() < 8) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             Passenger newPassenger = new Passenger(firstName, lastName, emailAddress, password, addressLine1, addressLine2,city,state,zip,phoneNumber);
@@ -119,21 +119,21 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 //            if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
 //                    || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
 //                response.status(400);
-//                return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+//                return dataToJson.dataToJsonFormat(new Error(400, 3000, "email address already taken"));
 //            }
 
             if (!newPassenger.isValidPassenger()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(newPassenger);
             response.status(200);
-            return dataToJson.d2j(newPassenger);
+            return dataToJson.dataToJsonFormat(newPassenger);
 
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -165,7 +165,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
                 if (getDs().find(Driver.class).field("emailAddress").equal(emailAddress).get() != null
                         || getDs().find(Passenger.class).field("emailAddress").equal(emailAddress).get() != null) {
                     response.status(400);
-                    return dataToJson.d2j(new Error(400, 3000, "email address already taken"));
+                    return dataToJson.dataToJsonFormat(new Error(400, 3000, "email address already taken"));
                 }
                 passenger.setEmailAddress(emailAddress);
             }
@@ -174,7 +174,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
                 String password = jsonObject.get("password").toString().replaceAll("\"", "");
                 if (password.length() > 20 || password.length() < 8) {
                     response.status(400);
-                    return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                    return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
                 }
                 passenger.setPassword(password);
             }
@@ -211,15 +211,15 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             if (!passenger.isValidPassenger()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(passenger);
             response.status(200);
-            return dataToJson.d2j(passenger);
+            return dataToJson.dataToJsonFormat(passenger);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
 
     }
@@ -236,14 +236,14 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
             if (passenger == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1004, "Given passenger does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1004, "Given passenger does not exist"));
             }
             getDs().delete(passenger);
             response.status(200);
-            return dataToJson.d2j(passenger);
+            return dataToJson.dataToJsonFormat(passenger);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -260,7 +260,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             Passenger passenger = getDs().find(Passenger.class).field("id").equal(id).get();
             if (passenger == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1004, "Given passenger does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1004, "Given passenger does not exist"));
             }
             List<String> rideIds = passenger.getRides();
             List<Ride> rides = new ArrayList<>();
@@ -269,16 +269,16 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
                     Ride ride = getDs().find(Ride.class).field("id").equal(rideId).get();
                     if (ride == null) {
                         response.status(400);
-                        return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                        return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
                     }
                     rides.add(ride);
                 }
             }
             response.status(200);
-            return dataToJson.d2j(rides);
+            return dataToJson.dataToJsonFormat(rides);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -325,7 +325,7 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
 
             if (!newRide.isValidRide()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
             newRide.setDriver(driverId);
             newRide.setCar(carId);
@@ -339,11 +339,11 @@ public class PassengerDAO extends BasicDAO<Passenger, String> {
             passenger.addRide(newRide.getId());
             getDs().save(passenger);
             response.status(200);
-            return dataToJson.d2j(newRide);
+            return dataToJson.dataToJsonFormat(newRide);
 
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 }

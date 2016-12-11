@@ -48,7 +48,7 @@ public class RideTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'RideTestDriver04@att.com'," +
+            "'emailAddress':'RideTestDriver06@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -61,7 +61,7 @@ public class RideTest {
             "}";
 
     String requestBodyDriverToken = "{" +
-            "'email':'RideTestDriver04@att.com'," +
+            "'email':'RideTestDriver06@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -78,7 +78,7 @@ public class RideTest {
     String requestBodyPassenger = "{" +
             "'firstName':'Zoe'," +
             "'lastName':'Moore'," +
-            "'emailAddress':'RideTestPassenger04@att.com'," +
+            "'emailAddress':'RideTestPassenger06@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'1999 Castro Street'," +
             "'addressLine2':''," +
@@ -89,10 +89,26 @@ public class RideTest {
             "}";
 
     String requestBodyPassegnerToken = "{" +
-            "'email':'RideTestPassenger04@att.com'," +
+            "'email':'RideTestPassenger06@att.com'," +
             "'password':'1234567890'" +
             "}";
 
+        /** This test is used to test Ride.
+         * 1. create driver
+         * 2. get token for the driver
+         * 3. create car with driver token
+         * 4. create passenger
+         * 5. get token for the passenger
+         * 6. create ride with passenger token
+         * 7. update the ride with driver and car info
+         * 5. create a route point to the ride
+         * 6. get route points
+         * 7. get latest route points
+         * 8. delete driver
+         * 9. delete car
+         * 10. delete passenger
+         * 11. delete ride
+         * */
     @Test
     public void Ride() throws IOException {
             //create a driver for token and ride
@@ -160,7 +176,7 @@ public class RideTest {
             tokenPassenger = jsonTokenPassegner.get("token");
 
             //create a ride for the passenger
-            TestResponse resTokenRide = TestResponse.request("POST", "/v1/passengers/"+testPassengerIDforRide+"/rides", requestBodyRide);
+            TestResponse resTokenRide = TestResponse.request("POST", "/v1/passengers/"+testPassengerIDforRide+"/rides", requestBodyRide, tokenPassenger);
             Map<String, String> jsonTokenRide = resTokenRide.json();
             assertEquals(200, resTokenRide.status);
             assertNotNull(jsonTokenRide.get("id"));

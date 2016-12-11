@@ -78,7 +78,7 @@ public class Session {
 
             if (!isDriver && !isPassenger) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 9001, "Wrong username or password"));
+                return dataToJson.dataToJsonFormat(new Error(400, 9001, "Wrong username or password"));
             }
 
             String userId = (driver != null) ? driver.getId() : passenger.getId();
@@ -106,11 +106,11 @@ public class Session {
             Token token = new Token(tokenString);
 
             response.status(200);
-            return dataToJson.d2j(token);
+            return dataToJson.dataToJsonFormat(token);
 
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 }

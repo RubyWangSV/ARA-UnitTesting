@@ -38,6 +38,15 @@ public class DriverTest {
             "'licensedState':'CA'" +
             "}";
 
+    /** This test is used to test Driver.
+     * 1. create driver
+     * 2. get driver
+     * 3. patch driver with update info
+     * 4. delete driver
+     * 5. should not get deleted driver
+     * 6. should not create missing email address
+     * 7. should not create driver with long password
+     * */
     @Test
     public void Driver() throws IOException {
 

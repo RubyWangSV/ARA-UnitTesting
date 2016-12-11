@@ -102,15 +102,21 @@ public class Application {
 
     }
 
+    /** This method is verify token.
+     * @param request
+     * @param response
+     * @return error message if token verification failed
+     * @throws IOException
+     */
     private static void verifyToken(Request request, Response response) throws IOException {
         String tokenValue = request.headers("token");
         String path = request.pathInfo();
         String method = request.requestMethod();
         if (!(method == "POST" && (path.contains("cars") || path.contains("rides")))){
-            halt(401, dataToJson.d2j(new Error(401, 1000, "Invalid resource.")));
+            halt(401, dataToJson.dataToJsonFormat(new Error(401, 1000, "Invalid resource.")));
         }
         if ( tokenValue == null) {
-            halt(400, dataToJson.d2j(new Error(400, 9003, "No token provided")));
+            halt(400, dataToJson.dataToJsonFormat(new Error(400, 9003, "No token provided")));
         }
         try {
             Claims claims = Jwts.parser()
@@ -119,15 +125,15 @@ public class Application {
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
             if (claims.getExpiration().before(now)) {
-                halt(401, dataToJson.d2j(new Error(401, 9004, "Token expired")));
+                halt(401, dataToJson.dataToJsonFormat(new Error(401, 9004, "Token expired")));
             }
             String id = claims.getSubject();
             String givenId = request.params(":id");
             if (!id.equals(givenId)) {
-                halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
+                halt(401, dataToJson.dataToJsonFormat(new Error(401, 9002, "Failed to authenticate token")));
             }
         } catch (Exception e) {
-            halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
+            halt(401, dataToJson.dataToJsonFormat(new Error(401, 9002, "Failed to authenticate token")));
         }
     }
 }

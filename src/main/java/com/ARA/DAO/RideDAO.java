@@ -58,10 +58,10 @@ public class RideDAO extends BasicDAO<Ride, String> {
             List<Ride> allRide = getDs().find(Ride.class).offset(offsetId).limit(count).order(sortBy).asList();
 
             response.status(200);
-            return dataToJson.d2j(allRide);
+            return dataToJson.dataToJsonFormat(allRide);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -77,13 +77,13 @@ public class RideDAO extends BasicDAO<Ride, String> {
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
             }
             response.status(200);
-            return dataToJson.d2j(ride);
+            return dataToJson.dataToJsonFormat(ride);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -151,11 +151,11 @@ public class RideDAO extends BasicDAO<Ride, String> {
             }
             getDs().save(ride);
             response.status(200);
-            return dataToJson.d2j(ride);
+            return dataToJson.dataToJsonFormat(ride);
 
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -171,14 +171,14 @@ public class RideDAO extends BasicDAO<Ride, String> {
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
             }
             getDs().delete(ride);
             response.status(200);
-            return dataToJson.d2j(ride);
+            return dataToJson.dataToJsonFormat(ride);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -194,7 +194,7 @@ public class RideDAO extends BasicDAO<Ride, String> {
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
             }
             JsonObject jsonObject = (JsonObject) new JsonParser().parse(request.body());
             if (jsonObject.has("timestamp") && jsonObject.has("latitude") && jsonObject.has("longitude")) {
@@ -206,14 +206,14 @@ public class RideDAO extends BasicDAO<Ride, String> {
                 ride.addRoutePoints(newRoutePoint);
                 getDs().save(ride);
                 response.status(200);
-                return dataToJson.d2j(newRoutePoint);
+                return dataToJson.dataToJsonFormat(newRoutePoint);
             } else {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -229,15 +229,15 @@ public class RideDAO extends BasicDAO<Ride, String> {
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
             }
             List<routePoint> routePoints = ride.getRoutePoints();
             Collections.sort(routePoints, Comparator.comparing(routePoint::getTimestamp));
             response.status(200);
-            return dataToJson.d2j(routePoints);
+            return dataToJson.dataToJsonFormat(routePoints);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -253,15 +253,15 @@ public class RideDAO extends BasicDAO<Ride, String> {
             Ride ride = getDs().find(Ride.class).field("id").equal(id).get();
             if (ride == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1005, "Given ride does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1005, "Given ride does not exist"));
             }
             List<routePoint> routePoints = ride.getRoutePoints();
             Collections.sort(routePoints, Comparator.comparing(routePoint::getTimestamp));
             response.status(200);
-            return dataToJson.d2j(routePoints.get(routePoints.size() - 1));
+            return dataToJson.dataToJsonFormat(routePoints.get(routePoints.size() - 1));
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 }

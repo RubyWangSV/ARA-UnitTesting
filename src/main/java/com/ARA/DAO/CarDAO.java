@@ -43,10 +43,10 @@ public class CarDAO extends BasicDAO<Car, String> {
         try {
             List<Car> allCar = getDs().find(Car.class).asList();
             response.status(200);
-            return dataToJson.d2j(allCar);
+            return dataToJson.dataToJsonFormat(allCar);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -62,13 +62,13 @@ public class CarDAO extends BasicDAO<Car, String> {
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1002, "Given car does not exist"));
             }
             response.status(200);
-            return dataToJson.d2j(car);
+            return dataToJson.dataToJsonFormat(car);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -130,15 +130,15 @@ public class CarDAO extends BasicDAO<Car, String> {
             }
             if (!car.isValidCar()) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 2000, "Invalid data type"));
+                return dataToJson.dataToJsonFormat(new Error(400, 2000, "Invalid data type"));
             }
 
             getDs().save(car);
             response.status(200);
-            return dataToJson.d2j(car);
+            return dataToJson.dataToJsonFormat(car);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -154,14 +154,14 @@ public class CarDAO extends BasicDAO<Car, String> {
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1002, "Given car does not exist"));
             }
             getDs().delete(car);
             response.status(200);
-            return dataToJson.d2j(car);
+            return dataToJson.dataToJsonFormat(car);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 
@@ -177,7 +177,7 @@ public class CarDAO extends BasicDAO<Car, String> {
             Car car = getDs().find(Car.class).field("id").equal(id).get();
             if (car == null) {
                 response.status(400);
-                return dataToJson.d2j(new Error(400, 1002, "Given car does not exist"));
+                return dataToJson.dataToJsonFormat(new Error(400, 1002, "Given car does not exist"));
             }
             List<String> driverIds = car.getDrivers();
             List<Driver> drivers = new ArrayList<>();
@@ -186,16 +186,16 @@ public class CarDAO extends BasicDAO<Car, String> {
                     Driver driver = getDs().find(Driver.class).field("id").equal(driverId).get();
                     if (driver == null) {
                         response.status(400);
-                        return dataToJson.d2j(new Error(400, 1002, "Given driver does not exist"));
+                        return dataToJson.dataToJsonFormat(new Error(400, 1002, "Given driver does not exist"));
                     }
                     drivers.add(driver);
                 }
             }
             response.status(200);
-            return dataToJson.d2j(drivers);
+            return dataToJson.dataToJsonFormat(drivers);
         } catch (Exception e) {
             response.status(500);
-            return dataToJson.d2j(new Error(500, 5000, e.getMessage()));
+            return dataToJson.dataToJsonFormat(new Error(500, 5000, e.getMessage()));
         }
     }
 }
