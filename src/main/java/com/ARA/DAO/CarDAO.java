@@ -41,7 +41,14 @@ public class CarDAO extends BasicDAO<Car, String> {
      */
     public String getAllCars(Request request, Response response) throws IOException {
         try {
-            List<Car> allCar = getDs().find(Car.class).asList();
+            Integer count = request.queryParams().contains("count") ? Integer.valueOf(request.queryParams("count")) : 2147483647;
+            Integer offsetId = request.queryParams().contains("offsetId") ? Integer.valueOf(request.queryParams("offsetId")) : 0;
+            String sortBy = request.queryParams().contains("sort") ? request.queryParams("sort") : "_id";
+
+            if (request.queryParams().contains("sortOrder") && "DESC".equalsIgnoreCase(request.queryParams("sortOrder")))
+                sortBy = "-" + sortBy;
+
+            List<Car> allCar = getDs().find(Car.class).offset(offsetId).limit(count).order(sortBy).asList();
             response.status(200);
             return dataToJson.dataToJsonFormat(allCar);
         } catch (Exception e) {
