@@ -48,7 +48,7 @@ public class RideTest {
     String requestBodyDriver = "{" +
             "'firstName':'Mark'," +
             "'lastName':'Azi'," +
-            "'emailAddress':'RideTestDriver06@att.com'," +
+            "'emailAddress':'RideTestDriver07@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'120 El, CA'," +
             "'addressLine2':''," +
@@ -61,7 +61,7 @@ public class RideTest {
             "}";
 
     String requestBodyDriverToken = "{" +
-            "'email':'RideTestDriver06@att.com'," +
+            "'email':'RideTestDriver07@att.com'," +
             "'password':'1234567890'" +
             "}";
 
@@ -78,7 +78,7 @@ public class RideTest {
     String requestBodyPassenger = "{" +
             "'firstName':'Zoe'," +
             "'lastName':'Moore'," +
-            "'emailAddress':'RideTestPassenger06@att.com'," +
+            "'emailAddress':'RideTestPassenger07@att.com'," +
             "'password':'1234567890'," +
             "'addressLine1':'1999 Castro Street'," +
             "'addressLine2':''," +
@@ -89,7 +89,7 @@ public class RideTest {
             "}";
 
     String requestBodyPassegnerToken = "{" +
-            "'email':'RideTestPassenger06@att.com'," +
+            "'email':'RideTestPassenger07@att.com'," +
             "'password':'1234567890'" +
             "}";
 
