@@ -11,7 +11,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import spark.Request;
+import spark.Response;
 
+import java.io.IOException;
 import java.util.Date;
 
 public class Application {
@@ -54,35 +57,10 @@ public class Application {
         // Only driver can create new cars
         // Both driver and passenger can crete ride
         before(versionURI + "/drivers/:id/*", (request, response)
-                -> {
-            String tokenValue = request.headers("token");
-            String path = request.pathInfo();
-            String method = request.requestMethod();
-            if (!(method == "POST" && (path.contains("cars") || path.contains("rides")))){
-                halt(401, dataToJson.d2j(new Error(401, 1000, "Invalid resource.")));
-            }
-            if ( tokenValue == null) {
-                halt(400, dataToJson.d2j(new Error(400, 9003, "No token provided")));
-            }
-            try {
-                Claims claims = Jwts.parser()
-                        .setSigningKey(key)
-                        .parseClaimsJws(tokenValue).getBody();
-                long nowMillis = System.currentTimeMillis();
-                Date now = new Date(nowMillis);
-                if (claims.getExpiration().before(now)) {
-                    halt(401, dataToJson.d2j(new Error(401, 9004, "Token expired")));
-                }
-                String id = claims.getSubject();
-                String givenId = request.params(":id");
-                if (!id.equals(givenId)) {
-                    halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
-                }
-            } catch (Exception e) {
-                halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
-            }
-        });
+                -> verifyToken(request, response));
 
+        before(versionURI + "/passengers/:id/*", (request, response)
+                -> verifyToken(request, response));
 
         // CRUD for Cars
         get(versionURI + "/cars", (request, response) -> carDAO.getAllCars(request, response));
@@ -124,5 +102,34 @@ public class Application {
         get(versionURI + "/rides/:id/routePoints", (request, response) -> rideDAO.getRoutePoints(request, response));
         get(versionURI + "/rides/:id/routePoints/latest", (request, response) -> rideDAO.getLastestRoutePoints(request, response));
 
+    }
+
+    private static void verifyToken(Request request, Response response) throws IOException {
+        String tokenValue = request.headers("token");
+        String path = request.pathInfo();
+        String method = request.requestMethod();
+        if (!(method == "POST" && (path.contains("cars") || path.contains("rides")))){
+            halt(401, dataToJson.d2j(new Error(401, 1000, "Invalid resource.")));
+        }
+        if ( tokenValue == null) {
+            halt(400, dataToJson.d2j(new Error(400, 9003, "No token provided")));
+        }
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(tokenValue).getBody();
+            long nowMillis = System.currentTimeMillis();
+            Date now = new Date(nowMillis);
+            if (claims.getExpiration().before(now)) {
+                halt(401, dataToJson.d2j(new Error(401, 9004, "Token expired")));
+            }
+            String id = claims.getSubject();
+            String givenId = request.params(":id");
+            if (!id.equals(givenId)) {
+                halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
+            }
+        } catch (Exception e) {
+            halt(401, dataToJson.d2j(new Error(401, 9002, "Failed to authenticate token")));
+        }
     }
 }
